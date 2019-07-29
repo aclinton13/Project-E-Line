@@ -117,14 +117,29 @@ class searchPage(webapp2.RequestHandler):
                 self.response.write(handleEmergency(test[0]))
         self.response.write("templates/not_found.html")
 
+<<<<<<< HEAD
 
+=======
+class aboutPage(webapp2.RequestHandler):
+    def get(self):
+        template = jinja_env.get_template("templates/about.html")
+        self.response.write(template.render())
+>>>>>>> 041a9d035d83441ec7fa4635998f264346f4e956
 
 app = webapp2.WSGIApplication([
     ('/',mainPage),
     ('/emergency',emergencyPage),
     ('/setup',setupPage),
+<<<<<<< HEAD
     ('/search',searchPage),
     ('/contacts',contactPage),
 
+=======
+<<<<<<< HEAD
+    ('/about',aboutPage),
+=======
+    ('/search',searchPage)
+>>>>>>> 96b1b4fccf364abdacc7053a76cf75c99916d7dc
+>>>>>>> 041a9d035d83441ec7fa4635998f264346f4e956
     ],debug=True
 )
