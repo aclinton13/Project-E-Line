@@ -53,7 +53,8 @@ class Person(ndb.Model):
     id = ndb.StringProperty(required=True)
     location = ndb.StringProperty(required=True)
     eservice_info = ndb.KeyProperty(repeated=True)
-    econtacts_info = ndb.StructuredProperty(Information,repeated=True)
+    econtacts_info = ndb.KeyProperty(Information,repeated=True)
+    hotline_info=ndb.KeyProperty(repeated=True)
 
 
 class mainPage(webapp2.RequestHandler):
