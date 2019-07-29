@@ -20,7 +20,7 @@ def handleEmergency(person):
 class Information(ndb.Model):
     name = ndb.StringProperty(required=True)
     location = ndb.StringProperty(required=True)
-    number = ndb.IntegerProperty(required=True)
+    number = ndb.StringProperty(required=True)
 
 class Person(ndb.Model):
     id = ndb.StringProperty(required=True)
@@ -69,6 +69,16 @@ class setupPage(webapp2.RequestHandler):
             name="Fire Department",
             location=self.request.get("Country")+":"+self.request.get("City")+":"+self.request.get("Zip"),
             number=int(self.request.get("Fire")))
+        contact_info= Information(
+            name= "Emergency Contacts",
+            contact=self.request.get('contact'),
+            number=int(self.request.get('contact_num'))
+            )
+        hotline_info= Information(
+            name="Hotline Information",
+            funciton=self.request.get('hotline_function'),
+            number=self.request.get('hotline'),
+            )
         #check for the existence of duplicates
         Person(id=str(current_user),eservice_info=[police_info.put(),fire_info.put()],econtacts_info=[]).put()
         template = jinja_env.get_template("templates/finished_setup.html")
@@ -96,6 +106,10 @@ app = webapp2.WSGIApplication([
     ('/',mainPage),
     ('/emergency',emergencyPage),
     ('/setup',setupPage),
+<<<<<<< HEAD
     ('/about',aboutPage),
+=======
+    ('/search',searchPage)
+>>>>>>> 96b1b4fccf364abdacc7053a76cf75c99916d7dc
     ],debug=True
 )

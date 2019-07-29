@@ -5,20 +5,50 @@
     <title></title>
   </head>
   <body>
-    <p>This is the sign up page</p>
+    <center><p>This is the sign up page</p></center>
     <form class="setup" action="/setup" method="post">
+
       <ul>
-        <li><p>What country do you live in?</p></li>
-        <input type="text" name="Country" value="">
-        <li><p>What city do you live in?</p></li>
-        <input type="text" name="City" value="">
-        <li><p>What is your zip code?</p></li>
-        <input type="text" name="Zip" value="">
-        <li><p>What is the number of your Police Department?</p></li>
-        <input type="number" name="Police" value="">
+        <li><p>What country do you live in?*</p></li>
+        <input type="text" name="Country" value="" required>
+
+        <!-- <form action="/setup.html">
+          Username: <input type="text" name="usrname" required>
+          <input type="submit">
+        </form> -->
+
+        <li><p>What city do you live in?*</p></li>
+        <input type="text" name="City" value="" required>
+
+        <li><p>What is your zip code?*</p></li>
+        <input type="text" name="Zip" value="" required>
+
+        <li><p>What is the number of your Police Department?*</p></li>
+        <input type="number" name="Police" value="" required>
+
         <li><p>What is the number of your Fire Department?</p></li>
         <input type="number" name="Fire" value="">
       </ul>
+
+      <ul>
+          <li><p>Enter emergency contact information</p></li>
+          Name: <input type="text" name="contact" value="">
+          Number: <input type="number" name="contact_num" value="">
+          <li><p>Enter local hotline numbers:</p></li>
+          Number: <input type="number" name="hotline" value="">
+          Function: <input type="text" name="hotline_function" value="">
+        </ul>
+
+
+
+          <br>
+          <br>
+          <p>*=required</p>
+          <a href="/">Click here to add more contact information</a>
+          <br>
+          <!-- Right now, this link takes users back to hompage so make a page to input more contact information -->
+
+
       <input type="Submit" name="submit" value="Finish Setup">
     </form>
   </body>
