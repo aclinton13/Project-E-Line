@@ -16,6 +16,31 @@ def handleEmergency(person):
     }
     template = jinja_env.get_template("templates/emergency.html")
     return template.render(template_vars)
+def listContains(li,subli):
+    if len(subli) > len(li):
+        return False
+    consistent = -1
+    pos = 1
+    for item in subli:
+        if item == "":
+            pos = pos+1
+            consistent = consistent+1
+            continue
+        if item in li:
+            if consistent == -1:
+                consistent = li.index(item)
+            else:
+                if consistent+1 == li.index(item):
+                    consistent = consistent+1
+                    pos = pos+1
+                else:
+                    consistent = -1
+                    pos = 1
+    if pos == len(subli):
+        return True
+    else:
+        return False
+
 
 class Information(ndb.Model):
     name = ndb.StringProperty(required=True)
@@ -24,6 +49,7 @@ class Information(ndb.Model):
 
 class Person(ndb.Model):
     id = ndb.StringProperty(required=True)
+    location = ndb.StringProperty(required=True)
     eservice_info = ndb.KeyProperty(repeated=True)
     econtacts_info = ndb.StructuredProperty(Information,repeated=True)
 
@@ -61,26 +87,32 @@ class setupPage(webapp2.RequestHandler):
             self.response.write(template.render())
     def post(self):
         current_user = users.get_current_user().email()
+        loc = self.request.get("Country")+":"+self.request.get("City")+":"+self.request.get("Zip")
         police_info = Information(
             name="Police Department",
-            location=self.request.get("Country")+":"+self.request.get("City")+":"+self.request.get("Zip"),
-            number=int(self.request.get("Police")))
+            location=loc,
+            number=self.request.get("Police"))
         fire_info = Information(
             name="Fire Department",
-            location=self.request.get("Country")+":"+self.request.get("City")+":"+self.request.get("Zip"),
-            number=int(self.request.get("Fire")))
-        contact_info= Information(
+            location=loc,
+            number=self.request.get("Fire"))
+        '''contact_info= Information(
             name= "Emergency Contacts",
             contact=self.request.get('contact'),
-            number=int(self.request.get('contact_num'))
+            number=self.request.get('contact_num')
             )
         hotline_info= Information(
             name="Hotline Information",
             funciton=self.request.get('hotline_function'),
             number=self.request.get('hotline'),
-            )
+            )'''
         #check for the existence of duplicates
-        Person(id=str(current_user),eservice_info=[police_info.put(),fire_info.put()],econtacts_info=[]).put()
+        Person(
+            id=str(current_user),
+            location=loc,
+            eservice_info=[police_info.put(),fire_info.put()],
+            econtacts_info=[]
+            ).put()
         template = jinja_env.get_template("templates/finished_setup.html")
         self.response.write(template.render())
 
@@ -90,12 +122,15 @@ class searchPage(webapp2.RequestHandler):
         self.response.write(template.render())
     def post(self):
         input_location = [self.request.get("Country"),self.request.get("City"),self.request.get("Zip")]
-        location = Information.location.split(":")
-        for i in range(3):
-            test = Information.query().filter(location[i] == input_location[i])
-            if len(test.fetch()) == 1:
-                self.response.write(handleEmergency(test[0]))
-        self.response.write("templates/not_found.html")
+        locations = Person.query().fetch()
+        print(locations[0].location.split(":"),input_location)
+        test = filter(lambda x: listContains(x.location.split(":"),input_location),locations)
+        print(len(test),"\n\n",test)
+        if len(test) == 1:
+            self.response.write(handleEmergency(test[0]))
+        else:
+            template = jinja_env.get_template("templates/not_found.html")
+            self.response.write(template.render())
 
 class aboutPage(webapp2.RequestHandler):
     def get(self):
@@ -106,10 +141,7 @@ app = webapp2.WSGIApplication([
     ('/',mainPage),
     ('/emergency',emergencyPage),
     ('/setup',setupPage),
-<<<<<<< HEAD
     ('/about',aboutPage),
-=======
-    ('/search',searchPage)
->>>>>>> 96b1b4fccf364abdacc7053a76cf75c99916d7dc
+    ('/search',searchPage),
     ],debug=True
 )
