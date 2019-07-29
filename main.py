@@ -51,8 +51,8 @@ class emergencyPage(webapp2.RequestHandler):
 class setupPage(webapp2.RequestHandler):
     def get(self):
         current_user = users.get_current_user().email()
-        person = Person.get_by_id(current_user)
-        if person == None:
+        person = Person.query().filter(Person.id == current_user.fetch())
+        if len(person) == None:
             template = jinja_env.get_template("templates/setup.html")
             self.response.write(template.render())
         else:
