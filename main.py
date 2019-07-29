@@ -53,8 +53,8 @@ class Person(ndb.Model):
     id = ndb.StringProperty(required=True)
     location = ndb.StringProperty(required=True)
     eservice_info = ndb.KeyProperty(repeated=True)
-    econtacts_info = ndb.KeyProperty(Information,repeated=True)
-    hotline_info=ndb.KeyProperty(repeated=True)
+    econtacts_info = ndb.KeyProperty(repeated=True)
+    hotline_info = ndb.KeyProperty(repeated=True)
 
 
 class mainPage(webapp2.RequestHandler):
@@ -91,6 +91,7 @@ class setupPage(webapp2.RequestHandler):
     def post(self):
         current_user = users.get_current_user().email()
         loc = self.request.get("Country")+":"+self.request.get("City")+":"+self.request.get("Zip")
+        input_info =[
         police_info = Information(
             name="Police Department",
             location=loc,
@@ -109,6 +110,8 @@ class setupPage(webapp2.RequestHandler):
             location=loc,
             number=self.request.get('hotline'),
             )
+        l = Information.query().filter((Information.name == input_info[i].name) && (Information.location == input_info[i].location)).fetch()
+        check = lambda x: ((x.name == ))
         #check for the existence of duplicates
         Person(
             id=str(current_user),
@@ -150,9 +153,7 @@ class searchPage(webapp2.RequestHandler):
     def post(self):
         input_location = [self.request.get("Country"),self.request.get("City"),self.request.get("Zip")]
         locations = Person.query().fetch()
-        print(locations[0].location.split(":"),input_location)
         test = filter(lambda x: listContains(x.location.split(":"),input_location),locations)
-        print(len(test),"\n\n",test)
         if len(test) == 1:
             self.response.write(handleEmergency(test[0]))
         else:
