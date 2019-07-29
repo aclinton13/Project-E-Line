@@ -46,6 +46,8 @@ class Information(ndb.Model):
     name = ndb.StringProperty(required=True)
     location = ndb.StringProperty(required=True)
     number = ndb.StringProperty(required=True)
+    contact = ndb.StringProperty(required=False)
+    function= ndb.StringProperty(required=False)
 
 class Person(ndb.Model):
     id = ndb.StringProperty(required=True)
@@ -103,7 +105,7 @@ class setupPage(webapp2.RequestHandler):
             )
         hotline_info= Information(
             name="Hotline Information",
-            funciton=self.request.get('hotline_function'),
+            function=self.request.get('hotline_function'),
             number=self.request.get('hotline'),
             )'''
         #check for the existence of duplicates
@@ -115,6 +117,24 @@ class setupPage(webapp2.RequestHandler):
             ).put()
         template = jinja_env.get_template("templates/finished_setup.html")
         self.response.write(template.render())
+
+class contactPage(webapp2.RequestHandler):
+    def get(self):
+        current_user = users.get_current_user().email()
+        person = Person.query().filter(Person.id == current_user).fetch()
+        template = jinja_env.get_template("templates/contacts.html")
+        self.response.write(template.render())
+    def post(self):
+        current_user = users.get_current_user().email()
+        contact_info= Information(
+            name= "Emergency Contacts",
+            contact=self.request.get('contact'),
+            number=(self.request.get('contact_num'))
+            )
+        template = jinja_env.get_template("templates/finished_setup.html")
+        self.response.write(template.render())
+        #.put() the information (also for new vars in setupPage)
+
 
 class searchPage(webapp2.RequestHandler):
     def get(self):
@@ -141,7 +161,21 @@ app = webapp2.WSGIApplication([
     ('/',mainPage),
     ('/emergency',emergencyPage),
     ('/setup',setupPage),
+<<<<<<< HEAD
     ('/about',aboutPage),
     ('/search',searchPage),
+=======
+<<<<<<< HEAD
+    ('/search',searchPage),
+    ('/contacts',contactPage),
+
+=======
+<<<<<<< HEAD
+    ('/about',aboutPage),
+=======
+    ('/search',searchPage)
+>>>>>>> 96b1b4fccf364abdacc7053a76cf75c99916d7dc
+>>>>>>> 041a9d035d83441ec7fa4635998f264346f4e956
+>>>>>>> 5b6cedcb51070a20eb752fe8f890764da1f37060
     ],debug=True
 )
