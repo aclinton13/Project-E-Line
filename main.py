@@ -94,5 +94,6 @@ app = webapp2.WSGIApplication([
     ('/',mainPage),
     ('/emergency',emergencyPage),
     ('/setup',setupPage),
+    ('/search',searchPage)
     ],debug=True
 )
