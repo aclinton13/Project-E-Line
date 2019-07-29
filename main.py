@@ -100,16 +100,16 @@ class setupPage(webapp2.RequestHandler):
             name="Fire Department",
             location=loc,
             number=self.request.get("Fire"))
-        '''contact_info= Information(
-            name= "Emergency Contacts",
-            contact=self.request.get('contact'),
+        econtact_info= Information(
+            name= self.request.get('contact'),
+            location=loc,
             number=self.request.get('contact_num')
             )
         hotline_info= Information(
-            name="Hotline Information",
-            function=self.request.get('hotline_function'),
+            name=self.request.get('hotline_function'),
+            location=loc,
             number=self.request.get('hotline'),
-            )'''
+            )
         l = Information.query().filter((Information.name == input_info[i].name) && (Information.location == input_info[i].location)).fetch()
         check = lambda x: ((x.name == ))
         #check for the existence of duplicates
@@ -117,8 +117,10 @@ class setupPage(webapp2.RequestHandler):
             id=str(current_user),
             location=loc,
             eservice_info=[police_info.put(),fire_info.put()],
-            econtacts_info=[]
+            econtacts_info=[],
+            hotline_info=[],
             ).put()
+
         template = jinja_env.get_template("templates/finished_setup.html")
         self.response.write(template.render())
 
@@ -135,9 +137,13 @@ class contactPage(webapp2.RequestHandler):
             contact=self.request.get('contact'),
             number=(self.request.get('contact_num'))
             )
+        hotline_info= Information(
+            name="Hotline Information",
+            function=self.request.get('hotline_function'),
+            number=self.request.get('hotline'),
+            )
         template = jinja_env.get_template("templates/finished_setup.html")
         self.response.write(template.render())
-        #.put() the information (also for new vars in setupPage)
 
 
 class searchPage(webapp2.RequestHandler):
@@ -165,5 +171,6 @@ app = webapp2.WSGIApplication([
     ('/setup',setupPage),
     ('/about',aboutPage),
     ('/search',searchPage),
+    ('/contacts',contactPage),
     ],debug=True
 )
