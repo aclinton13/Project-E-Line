@@ -37,7 +37,7 @@ class mainPage(webapp2.RequestHandler):
 class emergencyPage(webapp2.RequestHandler):
     def get(self):
         current_user = users.get_current_user()
-        person = Person.get_by_id(current_user)
+        person = Person.get_by_id(current_user.email())
         if person == None:
             template = jinja_env.get_template("templates/block.html")
             self.response.write(template.render())
@@ -48,12 +48,12 @@ class emergencyPage(webapp2.RequestHandler):
             template = jinja_env.get_template("templates/emergency.html")
             self.response.write(template.render(template_vars))
 
-class signupPage(webapp2.RequestHandler):
+class setupPage(webapp2.RequestHandler):
     def get(self):
-        current_user = users.get_current_user()
+        current_user = users.get_current_user().email()
         person = Person.get_by_id(current_user)
         if person == None:
-            template = jinja_env.get_template("templates/signup.html")
+            template = jinja_env.get_template("templates/setup.html")
             self.response.write(template.render())
         else:
             template = jinja_env.get_template("templates/repeat.html")
@@ -67,13 +67,13 @@ class signupPage(webapp2.RequestHandler):
             name="Fire Department",
             location=self.request.get("Country")+":"+self.request.get("City")+":"+self.request.get("Zip"),
             number=self.request.get("Fire Department's Number"))
-        p = Person(id=users.get_current_user(),eservice_info=[police_info.put(),fire_info.put],econtacts_info=[]).put()
-        self.redirect('/emergency?user='+p.id)
+        p = Person(id=current_user,eservice_info=[police_info.put(),fire_info.put],econtacts_info=[]).put()
+        self.redirect('/emergency')
 
 
 app = webapp2.WSGIApplication([
     ('/',mainPage),
     ('/emergency',emergencyPage),
-    ('/signup',signupPage),
+    ('/setup',setupPage),
     ],debug=True
 )
