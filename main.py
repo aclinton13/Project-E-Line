@@ -21,6 +21,8 @@ class Information(ndb.Model):
     name = ndb.StringProperty(required=True)
     location = ndb.StringProperty(required=True)
     number = ndb.StringProperty(required=True)
+    contact = ndb.StringProperty(required=False)
+    function= ndb.StringProperty(required=False)
 
 class Person(ndb.Model):
     id = ndb.StringProperty(required=True)
@@ -64,25 +66,43 @@ class setupPage(webapp2.RequestHandler):
         police_info = Information(
             name="Police Department",
             location=self.request.get("Country")+":"+self.request.get("City")+":"+self.request.get("Zip"),
-            number=int(self.request.get("Police")))
+            number=(self.request.get("Police")))
         fire_info = Information(
             name="Fire Department",
             location=self.request.get("Country")+":"+self.request.get("City")+":"+self.request.get("Zip"),
-            number=int(self.request.get("Fire")))
+            number=(self.request.get("Fire")))
         contact_info= Information(
             name= "Emergency Contacts",
             contact=self.request.get('contact'),
-            number=int(self.request.get('contact_num'))
+            number=(self.request.get('contact_num'))
             )
         hotline_info= Information(
             name="Hotline Information",
-            funciton=self.request.get('hotline_function'),
+            function=self.request.get('hotline_function'),
             number=self.request.get('hotline'),
             )
         #check for the existence of duplicates
         Person(id=str(current_user),eservice_info=[police_info.put(),fire_info.put()],econtacts_info=[]).put()
         template = jinja_env.get_template("templates/finished_setup.html")
         self.response.write(template.render())
+
+class contactPage(webapp2.RequestHandler):
+    def get(self):
+        current_user = users.get_current_user().email()
+        person = Person.query().filter(Person.id == current_user).fetch()
+        template = jinja_env.get_template("templates/contacts.html")
+        self.response.write(template.render())
+    def post(self):
+        current_user = users.get_current_user().email()
+        contact_info= Information(
+            name= "Emergency Contacts",
+            contact=self.request.get('contact'),
+            number=(self.request.get('contact_num'))
+            )
+        template = jinja_env.get_template("templates/finished_setup.html")
+        self.response.write(template.render())
+        #.put() the information (also for new vars in setupPage)
+
 
 class searchPage(webapp2.RequestHandler):
     def get(self):
@@ -99,11 +119,12 @@ class searchPage(webapp2.RequestHandler):
 
 
 
-
 app = webapp2.WSGIApplication([
     ('/',mainPage),
     ('/emergency',emergencyPage),
     ('/setup',setupPage),
-    ('/search',searchPage)
+    ('/search',searchPage),
+    ('/contacts',contactPage),
+
     ],debug=True
 )
