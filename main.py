@@ -37,13 +37,13 @@ class mainPage(webapp2.RequestHandler):
 class emergencyPage(webapp2.RequestHandler):
     def get(self):
         current_user = users.get_current_user()
-        person = Person.get_by_id(current_user.email())
-        if person == None:
+        person = Person.query().filter(Person.id == current_user.email()).fetch()
+        if len(person) == 0:
             template = jinja_env.get_template("templates/block.html")
             self.response.write(template.render())
         else:
             template_vars = {
-                "person": person,
+                "person": person[0],
             }
             template = jinja_env.get_template("templates/emergency.html")
             self.response.write(template.render(template_vars))
@@ -59,15 +59,16 @@ class setupPage(webapp2.RequestHandler):
             template = jinja_env.get_template("templates/repeat.html")
             self.response.write(template.render())
     def post(self):
+        current_user = users.get_current_user().email()
         police_info = Information(
             name="Police Department",
             location=self.request.get("Country")+":"+self.request.get("City")+":"+self.request.get("Zip"),
-            number=self.request.get("Police Department's Number"))
+            number=int(self.request.get("Police")))
         fire_info = Information(
             name="Fire Department",
             location=self.request.get("Country")+":"+self.request.get("City")+":"+self.request.get("Zip"),
-            number=self.request.get("Fire Department's Number"))
-        p = Person(id=current_user,eservice_info=[police_info.put(),fire_info.put],econtacts_info=[]).put()
+            number=int(self.request.get("Fire")))
+        Person(id=str(current_user),eservice_info=[police_info.put(),fire_info.put()],econtacts_info=[]).put()
         self.redirect('/emergency')
 
 
