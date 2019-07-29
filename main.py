@@ -10,6 +10,13 @@ jinja_env = jinja2.Environment(
 from google.appengine.ext import ndb
 from google.appengine.api import users
 
+def handleEmergency(person):
+    template_vars = {
+        "person": person,
+    }
+    template = jinja_env.get_template("templates/emergency.html")
+    return template.render(template_vars)
+
 class Information(ndb.Model):
     name = ndb.StringProperty(required=True)
     location = ndb.StringProperty(required=True)
@@ -23,13 +30,11 @@ class Person(ndb.Model):
 
 class mainPage(webapp2.RequestHandler):
     def get(self):
-        name = self.request.get("name") or "World"
         current_user = users.get_current_user()
-        signin_link = users.create_login_url('/')
+        logout_link = users.create_logout_url('/setup')
         template_vars = {
-            "name": name,
             "current_user": current_user,
-            "signin_link": signin_link,
+            "logout_link": logout_link,
         }
         template = jinja_env.get_template("templates/hello.html")
         self.response.write(template.render(template_vars))
@@ -42,12 +47,7 @@ class emergencyPage(webapp2.RequestHandler):
             template = jinja_env.get_template("templates/block.html")
             self.response.write(template.render())
         else:
-            template_vars = {
-                "logout_link": users.create_logout_url('/setup'),
-                "person": person[0],
-            }
-            template = jinja_env.get_template("templates/emergency.html")
-            self.response.write(template.render(template_vars))
+            self.response.write(handleEmergency(person[0]))
 
 class setupPage(webapp2.RequestHandler):
     def get(self):
@@ -69,9 +69,25 @@ class setupPage(webapp2.RequestHandler):
             name="Fire Department",
             location=self.request.get("Country")+":"+self.request.get("City")+":"+self.request.get("Zip"),
             number=int(self.request.get("Fire")))
+        #check for the existence of duplicates
         Person(id=str(current_user),eservice_info=[police_info.put(),fire_info.put()],econtacts_info=[]).put()
         template = jinja_env.get_template("templates/finished_setup.html")
         self.response.write(template.render())
+
+class searchPage(webapp2.RequestHandler):
+    def get(self):
+        template = jinja_env.get_template("templates/search.html")
+        self.response.write(template.render())
+    def post(self):
+        input_location = [self.request.get("Country"),self.request.get("City"),self.request.get("Zip")]
+        location = Information.location.split(":")
+        for i in range(3):
+            test = Information.query().filter(location[i] == input_location[i])
+            if len(test.fetch()) == 1:
+                self.response.write(handleEmergency(test[0]))
+        self.response.write("templates/not_found.html")
+
+
 
 
 app = webapp2.WSGIApplication([
