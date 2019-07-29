@@ -43,6 +43,7 @@ class emergencyPage(webapp2.RequestHandler):
             self.response.write(template.render())
         else:
             template_vars = {
+                "logout_link": users.create_logout_url('/setup'),
                 "person": person[0],
             }
             template = jinja_env.get_template("templates/emergency.html")
@@ -51,8 +52,8 @@ class emergencyPage(webapp2.RequestHandler):
 class setupPage(webapp2.RequestHandler):
     def get(self):
         current_user = users.get_current_user().email()
-        person = Person.query().filter(Person.id == current_user.fetch())
-        if len(person) == None:
+        person = Person.query().filter(Person.id == current_user).fetch()
+        if len(person) == 0:
             template = jinja_env.get_template("templates/setup.html")
             self.response.write(template.render())
         else:
@@ -69,7 +70,8 @@ class setupPage(webapp2.RequestHandler):
             location=self.request.get("Country")+":"+self.request.get("City")+":"+self.request.get("Zip"),
             number=int(self.request.get("Fire")))
         Person(id=str(current_user),eservice_info=[police_info.put(),fire_info.put()],econtacts_info=[]).put()
-        self.redirect('/emergency')
+        template = jinja_env.get_template("templates/finished_setup.html")
+        self.response.write(template.render())
 
 
 app = webapp2.WSGIApplication([
