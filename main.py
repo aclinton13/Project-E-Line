@@ -53,7 +53,8 @@ class Person(ndb.Model):
     id = ndb.StringProperty(required=True)
     location = ndb.StringProperty(required=True)
     eservice_info = ndb.KeyProperty(repeated=True)
-    econtacts_info = ndb.StructuredProperty(Information,repeated=True)
+    econtacts_info = ndb.KeyProperty(repeated=True)
+    hotline_info = ndb.KeyProperty(repeated=True)
 
 
 class mainPage(webapp2.RequestHandler):
@@ -90,6 +91,7 @@ class setupPage(webapp2.RequestHandler):
     def post(self):
         current_user = users.get_current_user().email()
         loc = self.request.get("Country")+":"+self.request.get("City")+":"+self.request.get("Zip")
+        input_info =[
         police_info = Information(
             name="Police Department",
             location=loc,
@@ -108,6 +110,8 @@ class setupPage(webapp2.RequestHandler):
             function=self.request.get('hotline_function'),
             number=self.request.get('hotline'),
             )'''
+        l = Information.query().filter((Information.name == input_info[i].name) && (Information.location == input_info[i].location)).fetch()
+        check = lambda x: ((x.name == ))
         #check for the existence of duplicates
         Person(
             id=str(current_user),
@@ -143,9 +147,7 @@ class searchPage(webapp2.RequestHandler):
     def post(self):
         input_location = [self.request.get("Country"),self.request.get("City"),self.request.get("Zip")]
         locations = Person.query().fetch()
-        print(locations[0].location.split(":"),input_location)
         test = filter(lambda x: listContains(x.location.split(":"),input_location),locations)
-        print(len(test),"\n\n",test)
         if len(test) == 1:
             self.response.write(handleEmergency(test[0]))
         else:
@@ -161,21 +163,7 @@ app = webapp2.WSGIApplication([
     ('/',mainPage),
     ('/emergency',emergencyPage),
     ('/setup',setupPage),
-<<<<<<< HEAD
     ('/about',aboutPage),
     ('/search',searchPage),
-=======
-<<<<<<< HEAD
-    ('/search',searchPage),
-    ('/contacts',contactPage),
-
-=======
-<<<<<<< HEAD
-    ('/about',aboutPage),
-=======
-    ('/search',searchPage)
->>>>>>> 96b1b4fccf364abdacc7053a76cf75c99916d7dc
->>>>>>> 041a9d035d83441ec7fa4635998f264346f4e956
->>>>>>> 5b6cedcb51070a20eb752fe8f890764da1f37060
     ],debug=True
 )
