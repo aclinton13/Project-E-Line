@@ -112,12 +112,12 @@ class setupPage(webapp2.RequestHandler):
         ]
         for i in range(len(input_info)):
             l = Information.query().filter(ndb.AND(Information.name == input_info[i].name,Information.location == input_info[i].location)).fetch()
-            if len(l) > 20:
+            # if len(l) > 20:
 
-            else:
-                input_info[i] = mostCommon(l,"number")
+        # else:
+        #     input_info[i] = mostCommon(l,"number")
 
-            logging.info(l)
+            # logging.info(l)
         Person(
             id=str(current_user),
             location=loc,
@@ -137,40 +137,51 @@ class contactPage(webapp2.RequestHandler):
         self.response.write(template.render())
     def post(self):
         current_user = users.get_current_user().email()
-        contact_info= Information(
-            name= "Emergency Contacts",
-            contact=self.request.get('contact'),
-            number=(self.request.get('contact_num'))
+        peep=getPerson()
+        peep.econtacts_info.append(
+            Information(
+                name= "Emergency Contacts",
+                contact=self.request.get('contact'),
+                number=(self.request.get('contact_num'))
+                ).put()
             )
-        hotline_info= Information(
+        peep.hotline_info.append(
+        Information(
             name="Hotline Information",
             function=self.request.get('hotline_function'),
             number=self.request.get('hotline'),
+            ).put()
             )
         template = jinja_env.get_template("templates/finished_setup.html")
         self.response.write(template.render())
 
-class changePage(webapp2.requestHandler):
+class changePage(webapp2.RequestHandler):
     def get(self):
         template = jinja_env.get_template("templates/changes.html")
         self.response.write(template.render())
     def post(self):
-        current_user.getPerson()
-        person = Person.query().filter(Person.id == current_user.email()).fetch()[0]
+        peep=getPerson()
+        index=findInfo(peep, self.request.get('name'))
+        if(peep==-1):
+            Information(
+                name="Police Department",
+                location=loc,
+                number=self.request.get("Police")
+                ),
+        peep.location.remove()
+        peep.location.append()
+        peep.eservice_info.remove()
+        peep.eservice_info.append()
+        # for i in range(len(loc or eservice):
+        #     peep.location[i]=        peep.location.append()
+        #     peep.eservice_info[]=        peep.eservice_info.append()
 
-        contact_info= Information(
 
-        )
 
-class choosePage(webapp2.requestHandler):
+class choosePage(webapp2.RequestHandler):
     def get(self):
         template = jinja_env.get_template("templates/choose.html")
         self.response.write(template.render())
-    def post(self):
-        current_user = users.get_current_user().email()
-        contact_info= Information()
-
-
 
 class searchPage(webapp2.RequestHandler):
     def get(self):
@@ -204,9 +215,6 @@ class testPage(webapp2.RequestHandler):
 
         template = jinja_env.get_template("templates/about.html")
         self.response.write(template.render())
-
-
-
 
 app = webapp2.WSGIApplication([
     ('/',mainPage),
