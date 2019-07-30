@@ -102,16 +102,6 @@ class setupPage(webapp2.RequestHandler):
                 location=loc,
                 number=self.request.get("Fire")
                 ),
-            Information(
-                name= self.request.get('contact'),
-                location=loc,
-                number=self.request.get('contact_num')
-                ),
-            Information(
-                name=self.request.get('hotline_function'),
-                location=loc,
-                number=self.request.get('hotline'),
-                )
         ]
         #l = Information.query().filter((Information.name == input_info[i].name) && (Information.location == input_info[i].location)).fetch()
         #check = lambda x: ((x.name == ))
@@ -119,7 +109,7 @@ class setupPage(webapp2.RequestHandler):
         Person(
             id=str(current_user),
             location=loc,
-            eservice_info=[police_info.put(),fire_info.put()],
+            eservice_info=[input_info[0].put(),input_info[1].put()],
             econtacts_info=[],
             hotline_info=[],
             ).put()
