@@ -36,7 +36,7 @@ class mainPage(webapp2.RequestHandler):
             "current_user": current_user,
             "logout_link": logout_link,
         }
-        template = jinja_env.get_template("templates/hello.html")
+        template = jinja_env.get_template("templates/eline.html")
         self.response.write(template.render(template_vars))
 
 class emergencyPage(webapp2.RequestHandler):
@@ -106,10 +106,7 @@ app = webapp2.WSGIApplication([
     ('/',mainPage),
     ('/emergency',emergencyPage),
     ('/setup',setupPage),
-<<<<<<< HEAD
     ('/about',aboutPage),
-=======
-    ('/search',searchPage)
->>>>>>> 96b1b4fccf364abdacc7053a76cf75c99916d7dc
+    ('/search',searchPage),
     ],debug=True
 )
