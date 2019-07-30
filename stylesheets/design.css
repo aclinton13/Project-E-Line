@@ -23,7 +23,8 @@ button {
   width: 100px;
 }
 .flex-container {
+  /* flex-direction: column; */
+  justify-content: space-between;
   display: flex;
-  flex-direction: column;
-  align-content: space-around;
+  align-items: center;
 }
