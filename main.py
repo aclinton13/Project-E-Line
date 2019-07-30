@@ -1,7 +1,9 @@
 import os
 import webapp2
 import jinja2
-
+from google.appengine.api import urlfetch
+import urllib
+import json
 
 jinja_env = jinja2.Environment(
     loader = jinja2.FileSystemLoader(os.path.dirname(__file__))
@@ -46,8 +48,6 @@ class Information(ndb.Model):
     name = ndb.StringProperty(required=True)
     location = ndb.StringProperty(required=True)
     number = ndb.StringProperty(required=True)
-    contact = ndb.StringProperty(required=False)
-    function= ndb.StringProperty(required=False)
 
 class Person(ndb.Model):
     id = ndb.StringProperty(required=True)
@@ -92,26 +92,29 @@ class setupPage(webapp2.RequestHandler):
         current_user = users.get_current_user().email()
         loc = self.request.get("Country")+":"+self.request.get("City")+":"+self.request.get("Zip")
         input_info =[
-        police_info = Information(
+        Information(
             name="Police Department",
             location=loc,
-            number=self.request.get("Police"))
-        fire_info = Information(
+            number=self.request.get("Police")
+            ),
+        Information(
             name="Fire Department",
             location=loc,
-            number=self.request.get("Fire"))
-        econtact_info= Information(
+            number=self.request.get("Fire")
+            ),
+        Information(
             name= self.request.get('contact'),
             location=loc,
             number=self.request.get('contact_num')
-            )
-        hotline_info= Information(
+            ),
+        Information(
             name=self.request.get('hotline_function'),
             location=loc,
             number=self.request.get('hotline'),
-            )
-        l = Information.query().filter((Information.name == input_info[i].name) && (Information.location == input_info[i].location)).fetch()
-        check = lambda x: ((x.name == ))
+            ),
+        ]
+        #l = Information.query().filter((Information.name == input_info[i].name) && (Information.location == input_info[i].location)).fetch()
+        #check = lambda x: ((x.name == ))
         #check for the existence of duplicates
         Person(
             id=str(current_user),
@@ -165,6 +168,20 @@ class aboutPage(webapp2.RequestHandler):
         template = jinja_env.get_template("templates/about.html")
         self.response.write(template.render())
 
+class testPage(webapp2.RequestHandler):
+    def get(self):
+        api_key = "AIzaSyAm7TCETbqEJZpeY4QGoRJN7mPGEKIx-ZQ"
+        params = {"q" : "Neverwhere","api_key" : api_key}
+        base_url = "https://www.googleapis.com/books/v1/volumes"
+        full_url = base_url+"?"+urllib.urlencode(params)
+        #print('full url:',full_url)
+        response = urlfetch.fetch(full_url).content
+        books = json.loads(response)
+        print("books:",books)
+
+        template = jinja_env.get_template("templates/about.html")
+        self.response.write(template.render())
+
 app = webapp2.WSGIApplication([
     ('/',mainPage),
     ('/emergency',emergencyPage),
@@ -172,5 +189,6 @@ app = webapp2.WSGIApplication([
     ('/about',aboutPage),
     ('/search',searchPage),
     ('/contacts',contactPage),
+    ('/test',testPage),
     ],debug=True
 )
