@@ -65,7 +65,7 @@ class mainPage(webapp2.RequestHandler):
             "current_user": current_user,
             "logout_link": logout_link,
         }
-        template = jinja_env.get_template("templates/hello.html")
+        template = jinja_env.get_template("templates/eline.html")
         self.response.write(template.render(template_vars))
 
 class emergencyPage(webapp2.RequestHandler):
