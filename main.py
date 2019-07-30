@@ -92,26 +92,26 @@ class setupPage(webapp2.RequestHandler):
         current_user = users.get_current_user().email()
         loc = self.request.get("Country")+":"+self.request.get("City")+":"+self.request.get("Zip")
         input_info =[
-        Information(
-            name="Police Department",
-            location=loc,
-            number=self.request.get("Police")
-            ),
-        Information(
-            name="Fire Department",
-            location=loc,
-            number=self.request.get("Fire")
-            ),
-        Information(
-            name= self.request.get('contact'),
-            location=loc,
-            number=self.request.get('contact_num')
-            ),
-        Information(
-            name=self.request.get('hotline_function'),
-            location=loc,
-            number=self.request.get('hotline'),
-            ),
+            Information(
+                name="Police Department",
+                location=loc,
+                number=self.request.get("Police")
+                ),
+            Information(
+                name="Fire Department",
+                location=loc,
+                number=self.request.get("Fire")
+                ),
+            Information(
+                name= self.request.get('contact'),
+                location=loc,
+                number=self.request.get('contact_num')
+                ),
+            Information(
+                name=self.request.get('hotline_function'),
+                location=loc,
+                number=self.request.get('hotline'),
+                )
         ]
         #l = Information.query().filter((Information.name == input_info[i].name) && (Information.location == input_info[i].location)).fetch()
         #check = lambda x: ((x.name == ))
