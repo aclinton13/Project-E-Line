@@ -138,6 +138,27 @@ class contactPage(webapp2.RequestHandler):
         template = jinja_env.get_template("templates/finished_setup.html")
         self.response.write(template.render())
 
+class changePage(webapp2.requestHandler):
+    def get(self):
+        template = jinja_env.get_template("templates/changes.html")
+        self.response.write(template.render())
+    def post(self):
+        current_user.getPerson()
+        person = Person.query().filter(Person.id == current_user.email()).fetch()[0]
+
+        contact_info= Information(
+
+        )
+
+class choosePage(webapp2.requestHandler):
+    def get(self):
+        template = jinja_env.get_template("templates/choose.html")
+        self.response.write(template.render())
+    def post(self):
+        current_user = users.get_current_user().email()
+        contact_info= Information()
+
+
 
 class searchPage(webapp2.RequestHandler):
     def get(self):
@@ -172,6 +193,9 @@ class testPage(webapp2.RequestHandler):
         template = jinja_env.get_template("templates/about.html")
         self.response.write(template.render())
 
+
+
+
 app = webapp2.WSGIApplication([
     ('/',mainPage),
     ('/emergency',emergencyPage),
@@ -180,5 +204,7 @@ app = webapp2.WSGIApplication([
     ('/search',searchPage),
     ('/contacts',contactPage),
     ('/test',testPage),
+    ('/changes',changePage),
+    ('/choose',choosePage),
     ],debug=True
 )
