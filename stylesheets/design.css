@@ -24,5 +24,6 @@ button {
 }
 .flex-container {
   display: flex;
-  justify-content: center;
+  flex-direction: column;
+  align-content: space-around;
 }
