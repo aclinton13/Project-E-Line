@@ -91,7 +91,7 @@ class setupPage(webapp2.RequestHandler):
     def post(self):
         current_user = users.get_current_user().email()
         loc = self.request.get("Country")+":"+self.request.get("City")+":"+self.request.get("Zip")
-        input_info =[
+        #input_info =[
         police_info = Information(
             name="Police Department",
             location=loc,
@@ -110,8 +110,8 @@ class setupPage(webapp2.RequestHandler):
             location=loc,
             number=self.request.get('hotline'),
             )
-        l = Information.query().filter((Information.name == input_info[i].name) && (Information.location == input_info[i].location)).fetch()
-        check = lambda x: ((x.name == ))
+        #l = Information.query().filter((Information.name == input_info[i].name) && (Information.location == input_info[i].location)).fetch()
+        #check = lambda x: ((x.name == ))
         #check for the existence of duplicates
         Person(
             id=str(current_user),
@@ -171,9 +171,7 @@ app = webapp2.WSGIApplication([
     ('/setup',setupPage),
     ('/about',aboutPage),
     ('/search',searchPage),
-<<<<<<< HEAD
-=======
     ('/contacts',contactPage),
->>>>>>> a85abf95c359ee06e93fccff7985fb8a7ec0f6df
+
     ],debug=True
 )
