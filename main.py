@@ -4,6 +4,7 @@ import jinja2
 from google.appengine.api import urlfetch
 import urllib
 import json
+import logging
 
 jinja_env = jinja2.Environment(
     loader = jinja2.FileSystemLoader(os.path.dirname(__file__))
@@ -42,7 +43,13 @@ def listContains(li,subli):
         return True
     else:
         return False
-
+def getPerson():
+    current_user = users.get_current_user()
+    person = Person.query().filter(Person.id == current_user.email()).fetch()
+    if len(person) == 1:
+        return person[0]
+    else:
+        return None
 
 class Information(ndb.Model):
     name = ndb.StringProperty(required=True)
@@ -68,15 +75,15 @@ class mainPage(webapp2.RequestHandler):
         template = jinja_env.get_template("templates/eline.html")
         self.response.write(template.render(template_vars))
 
+
 class emergencyPage(webapp2.RequestHandler):
     def get(self):
-        current_user = users.get_current_user()
-        person = Person.query().filter(Person.id == current_user.email()).fetch()
-        if len(person) == 0:
+        person = getPerson()
+        if person == None:
             template = jinja_env.get_template("templates/block.html")
             self.response.write(template.render())
         else:
-            self.response.write(handleEmergency(person[0]))
+            self.response.write(handleEmergency(person))
 
 class setupPage(webapp2.RequestHandler):
     def get(self):
@@ -103,9 +110,14 @@ class setupPage(webapp2.RequestHandler):
                 number=self.request.get("Fire")
                 ),
         ]
-        #l = Information.query().filter((Information.name == input_info[i].name) && (Information.location == input_info[i].location)).fetch()
-        #check = lambda x: ((x.name == ))
-        #check for the existence of duplicates
+        for i in range(len(input_info)):
+            l = Information.query().filter(ndb.AND(Information.name == input_info[i].name,Information.location == input_info[i].location)).fetch()
+            if len(l) > 20:
+
+            else:
+                input_info[i] = mostCommon(l,"number")
+
+            logging.info(l)
         Person(
             id=str(current_user),
             location=loc,
@@ -137,7 +149,6 @@ class contactPage(webapp2.RequestHandler):
             )
         template = jinja_env.get_template("templates/finished_setup.html")
         self.response.write(template.render())
-
 
 class searchPage(webapp2.RequestHandler):
     def get(self):
