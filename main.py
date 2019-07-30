@@ -16,16 +16,45 @@ def handleEmergency(person):
     }
     template = jinja_env.get_template("templates/emergency.html")
     return template.render(template_vars)
+def listContains(li,subli):
+    if len(subli) > len(li):
+        return False
+    consistent = -1
+    pos = 1
+    for item in subli:
+        if item == "":
+            pos = pos+1
+            consistent = consistent+1
+            continue
+        if item in li:
+            if consistent == -1:
+                consistent = li.index(item)
+            else:
+                if consistent+1 == li.index(item):
+                    consistent = consistent+1
+                    pos = pos+1
+                else:
+                    consistent = -1
+                    pos = 1
+    if pos == len(subli):
+        return True
+    else:
+        return False
+
 
 class Information(ndb.Model):
     name = ndb.StringProperty(required=True)
     location = ndb.StringProperty(required=True)
     number = ndb.StringProperty(required=True)
+    contact = ndb.StringProperty(required=False)
+    function= ndb.StringProperty(required=False)
 
 class Person(ndb.Model):
     id = ndb.StringProperty(required=True)
+    location = ndb.StringProperty(required=True)
     eservice_info = ndb.KeyProperty(repeated=True)
-    econtacts_info = ndb.StructuredProperty(Information,repeated=True)
+    econtacts_info = ndb.KeyProperty(repeated=True)
+    hotline_info = ndb.KeyProperty(repeated=True)
 
 
 class mainPage(webapp2.RequestHandler):
@@ -61,28 +90,61 @@ class setupPage(webapp2.RequestHandler):
             self.response.write(template.render())
     def post(self):
         current_user = users.get_current_user().email()
+        loc = self.request.get("Country")+":"+self.request.get("City")+":"+self.request.get("Zip")
+        input_info =[
         police_info = Information(
             name="Police Department",
-            location=self.request.get("Country")+":"+self.request.get("City")+":"+self.request.get("Zip"),
-            number=int(self.request.get("Police")))
+            location=loc,
+            number=self.request.get("Police"))
         fire_info = Information(
             name="Fire Department",
-            location=self.request.get("Country")+":"+self.request.get("City")+":"+self.request.get("Zip"),
-            number=int(self.request.get("Fire")))
+            location=loc,
+            number=self.request.get("Fire"))
+        econtact_info= Information(
+            name= self.request.get('contact'),
+            location=loc,
+            number=self.request.get('contact_num')
+            )
+        hotline_info= Information(
+            name=self.request.get('hotline_function'),
+            location=loc,
+            number=self.request.get('hotline'),
+            )
+        l = Information.query().filter((Information.name == input_info[i].name) && (Information.location == input_info[i].location)).fetch()
+        check = lambda x: ((x.name == ))
+        #check for the existence of duplicates
+        Person(
+            id=str(current_user),
+            location=loc,
+            eservice_info=[police_info.put(),fire_info.put()],
+            econtacts_info=[],
+            hotline_info=[],
+            ).put()
+
+        template = jinja_env.get_template("templates/finished_setup.html")
+        self.response.write(template.render())
+
+class contactPage(webapp2.RequestHandler):
+    def get(self):
+        current_user = users.get_current_user().email()
+        person = Person.query().filter(Person.id == current_user).fetch()
+        template = jinja_env.get_template("templates/contacts.html")
+        self.response.write(template.render())
+    def post(self):
+        current_user = users.get_current_user().email()
         contact_info= Information(
             name= "Emergency Contacts",
             contact=self.request.get('contact'),
-            number=int(self.request.get('contact_num'))
+            number=(self.request.get('contact_num'))
             )
         hotline_info= Information(
             name="Hotline Information",
-            funciton=self.request.get('hotline_function'),
+            function=self.request.get('hotline_function'),
             number=self.request.get('hotline'),
             )
-        #check for the existence of duplicates
-        Person(id=str(current_user),eservice_info=[police_info.put(),fire_info.put()],econtacts_info=[]).put()
         template = jinja_env.get_template("templates/finished_setup.html")
         self.response.write(template.render())
+
 
 class searchPage(webapp2.RequestHandler):
     def get(self):
@@ -90,12 +152,13 @@ class searchPage(webapp2.RequestHandler):
         self.response.write(template.render())
     def post(self):
         input_location = [self.request.get("Country"),self.request.get("City"),self.request.get("Zip")]
-        location = Information.location.split(":")
-        for i in range(3):
-            test = Information.query().filter(location[i] == input_location[i])
-            if len(test.fetch()) == 1:
-                self.response.write(handleEmergency(test[0]))
-        self.response.write("templates/not_found.html")
+        locations = Person.query().fetch()
+        test = filter(lambda x: listContains(x.location.split(":"),input_location),locations)
+        if len(test) == 1:
+            self.response.write(handleEmergency(test[0]))
+        else:
+            template = jinja_env.get_template("templates/not_found.html")
+            self.response.write(template.render())
 
 class aboutPage(webapp2.RequestHandler):
     def get(self):
@@ -108,5 +171,9 @@ app = webapp2.WSGIApplication([
     ('/setup',setupPage),
     ('/about',aboutPage),
     ('/search',searchPage),
+<<<<<<< HEAD
+=======
+    ('/contacts',contactPage),
+>>>>>>> a85abf95c359ee06e93fccff7985fb8a7ec0f6df
     ],debug=True
 )
