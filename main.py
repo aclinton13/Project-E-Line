@@ -182,17 +182,55 @@ class contactPage(webapp2.RequestHandler):
         self.response.write(template.render())
     def post(self):
         current_user = users.get_current_user().email()
-        contact_info= Information(
-            name= "Emergency Contacts",
-            contact=self.request.get('contact'),
-            number=(self.request.get('contact_num'))
+        peep=getPerson()
+        peep.econtacts_info.append(
+            Information(
+                name= "Emergency Contacts",
+                contact=self.request.get('contact'),
+                number=(self.request.get('contact_num'))
+                ).put()
             )
-        hotline_info= Information(
+        peep.hotline_info.append(
+        Information(
             name="Hotline Information",
             function=self.request.get('hotline_function'),
             number=self.request.get('hotline'),
+            ).put()
             )
         template = jinja_env.get_template("templates/finished_setup.html")
+        self.response.write(template.render())
+
+class changePage(webapp2.RequestHandler):
+    def get(self):
+        template = jinja_env.get_template("templates/changes.html")
+        self.response.write(template.render())
+    def post(self):
+        peep=getPerson()
+        index=findInfo(peep)
+        self.request.get('name')
+        if(peep==-1):
+            Information(
+                name="Police Department",
+                location=loc,
+                number=self.request.get("Police")),
+            Information(
+                name="Fire Department",
+                location=loc,
+                number=self.request.get("Fire"),
+                )
+        peep.location.remove()
+        peep.location.append()
+        peep.eservice_info.remove()
+        peep.eservice_info.append()
+        # for i in range(len(loc or eservice):
+        #     peep.location[i]=        peep.location.append()
+        #     peep.eservice_info[]=        peep.eservice_info.append()
+
+
+
+class choosePage(webapp2.RequestHandler):
+    def get(self):
+        template = jinja_env.get_template("templates/choose.html")
         self.response.write(template.render())
 
 class searchPage(webapp2.RequestHandler):
@@ -246,5 +284,7 @@ app = webapp2.WSGIApplication([
     ('/search',searchPage),
     ('/contacts',contactPage),
     ('/test',testPage),
+    ('/changes',changePage),
+    ('/choose',choosePage),
     ],debug=True
 )
