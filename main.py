@@ -57,9 +57,13 @@ def getPerson():
     else:
         return None
 
+def insurePerson(handler):
+    if getPerson() is None:
+        handler.redirect("/setup")
+
 def removePerson(person):
-    for item in person.eservice_info:
-        item.delete()
+    # for item in person.eservice_info:
+    #     item.delete()
     for item in person.econtacts_info:
         item.delete()
     person.key.delete()
@@ -100,17 +104,12 @@ class Person(ndb.Model):
     econtacts_info = ndb.KeyProperty(repeated=True)
 
 
-
 class mainPage(webapp2.RequestHandler):
     def get(self):
         current_user = users.get_current_user()
-        if not current_user:
-            login_link = users.create_login_url('/setup')
-            template_vars = {
-                "login_link": login_link,
-            }
-            template = jinja_env.get_template("templates/login.html")
-            self.response.write(template.render(template_vars))
+        person = getPerson()
+        if not person:
+            self.redirect("/setup")
         else:
             logout_link = users.create_logout_url('/')
             template_vars = {
@@ -120,15 +119,12 @@ class mainPage(webapp2.RequestHandler):
             template = jinja_env.get_template("templates/eline.html")
             self.response.write(template.render(template_vars))
 
-#Make it display everything
+#Make it the emergency.html display all infor
 class emergencyPage(webapp2.RequestHandler):
     def get(self):
         person = getPerson()
-        if person == None:
-            template = jinja_env.get_template("templates/block.html")
-            self.response.write(template.render())
-        else:
-            self.response.write(handleEmergency(person))
+        insurePerson(self)
+        self.response.write(handleEmergency(person))
 
 class setupPage(webapp2.RequestHandler):
     def get(self):
@@ -139,7 +135,7 @@ class setupPage(webapp2.RequestHandler):
                 "post_location" : "/setup"
             }
             template = jinja_env.get_template("templates/form.html")
-            self.response.write(template.render())
+            self.response.write(template.render(template_vars))
         else:
             template = jinja_env.get_template("templates/repeat.html")
             self.response.write(template.render())
@@ -194,38 +190,33 @@ class setupPage(webapp2.RequestHandler):
         template = jinja_env.get_template("templates/finished_setup.html")
         self.response.write(template.render())
 
-#Fix or remove
-class contactPage(webapp2.RequestHandler):
+class addContactsPage(webapp2.RequestHandler):
     def get(self):
-        current_user = users.get_current_user().email()
-        person = Person.query().filter(Person.id == current_user).fetch()
-        template = jinja_env.get_template("templates/contacts.html")
+        insurePerson(self)
+        template = jinja_env.get_template("templates/addContacts.html")
         self.response.write(template.render())
     def post(self):
         current_user = users.get_current_user().email()
-        people=getPerson()
-        people.econtacts_info.append(
+        person = getPerson()
+        loc = self.request.get("Country")+":"+self.request.get("City")+":"+self.request.get("Zip")
+        person.econtacts_info.append(
             Information(
-                name= "Emergency Contacts",
-                contact=self.request.get('contact'),
-                number=(self.request.get('contact_num'))
+                name= self.request.get("Name"),
+                location=loc,
+                number = (self.request.get("Number"))
                 ).put()
             )
-        template = jinja_env.get_template("templates/finished_setup.html")
+        template = jinja_env.get_template("templates/finished_adding_contact.html")
         self.response.write(template.render())
 
 class editInformationPage(webapp2.RequestHandler):
     def get(self):
         template_vars = {
-            "post_location" : "/editInformation"
+            "post_location" : "/setup"
         }
+        removePerson(getPerson())
         template = jinja_env.get_template("templates/form.html")
-        self.response.write(template.render())
-    def post(self):
-        person = getPerson()
-        if person:
-            removePerson(person)
-            self.redirect("/setup")
+        self.response.write(template.render(template_vars))
 
 class choosePage(webapp2.RequestHandler):
     def get(self):
@@ -238,7 +229,7 @@ class searchPage(webapp2.RequestHandler):
             "post_location" : "/search"
         }
         template = jinja_env.get_template("templates/form.html")
-        self.response.write(template.render())
+        self.response.write(template.render(template_vars))
     def post(self):
         input_location = [self.request.get("Country"),self.request.get("City"),self.request.get("Zip")]
         people = Person.query().fetch()
@@ -280,7 +271,7 @@ app = webapp2.WSGIApplication([
     ('/setup',setupPage),
     ('/about',aboutPage),
     ('/search',searchPage),
-    ('/contacts',contactPage),
+    ('/addContacts',addContactsPage),
     ('/test',testPage),
     ('/editInformation',editInformationPage),
     ('/choose',choosePage),
