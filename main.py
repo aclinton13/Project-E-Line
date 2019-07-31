@@ -71,7 +71,6 @@ class Person(ndb.Model):
     location = ndb.StringProperty(required=True)
     eservice_info = ndb.KeyProperty(repeated=True)
     econtacts_info = ndb.KeyProperty(repeated=True)
-    hotline_info = ndb.KeyProperty(repeated=True)
 
 class mainPage(webapp2.RequestHandler):
     def get(self):
@@ -173,20 +172,13 @@ class contactPage(webapp2.RequestHandler):
         self.response.write(template.render())
     def post(self):
         current_user = users.get_current_user().email()
-        peep=getPerson()
-        peep.econtacts_info.append(
+        people=getPerson()
+        people.econtacts_info.append(
             Information(
                 name= "Emergency Contacts",
                 contact=self.request.get('contact'),
                 number=(self.request.get('contact_num'))
                 ).put()
-            )
-        peep.hotline_info.append(
-        Information(
-            name="Hotline Information",
-            function=self.request.get('hotline_function'),
-            number=self.request.get('hotline'),
-            ).put()
             )
         template = jinja_env.get_template("templates/finished_setup.html")
         self.response.write(template.render())
@@ -196,10 +188,10 @@ class changePage(webapp2.RequestHandler):
         template = jinja_env.get_template("templates/changes.html")
         self.response.write(template.render())
     def post(self):
-        peep=getPerson()
-        index=findInfo(peep)
+        people=getPerson()
+        index=findInfo(people)
         self.request.get('name')
-        if(peep==-1):
+        if(people==-1):
             Information(
                 name="Police Department",
                 location=loc,
@@ -209,13 +201,13 @@ class changePage(webapp2.RequestHandler):
                 location=loc,
                 number=self.request.get("Fire"),
                 )
-        peep.location.remove()
-        peep.location.append()
-        peep.eservice_info.remove()
-        peep.eservice_info.append()
+        people.location.remove()
+        people.location.append()
+        people.eservice_info.remove()
+        people.eservice_info.append()
         # for i in range(len(loc or eservice):
-        #     peep.location[i]=        peep.location.append()
-        #     peep.eservice_info[]=        peep.eservice_info.append()
+        #     people.location[i]=        people.location.append()
+        #     people.eservice_info[]=        people.eservice_info.append()
 
 
 
