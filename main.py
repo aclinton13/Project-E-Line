@@ -20,6 +20,7 @@ def handleEmergency(person):
     }
     template = jinja_env.get_template("templates/emergency.html")
     return template.render(template_vars)
+
 def listContains(li,subli):
     loginfo(li)
     loginfo(subli)
@@ -47,6 +48,7 @@ def listContains(li,subli):
         return True
     else:
         return False
+
 def getPerson():
     current_user = users.get_current_user()
     person = Person.query().filter(Person.id == current_user.email()).fetch()
@@ -54,15 +56,14 @@ def getPerson():
         return person[0]
     else:
         return None
-def findInfo(person,name):
-    input_location = [self.request.get("Country"),self.request.get("City"),self.request.get("Zip")]
-    locations = Person.query().fetch()
-    test = filter(lambda x: listContains(x.location.split(":"),input_location),locations)
-    if len(test) == 1:
-        self.response.write(handleEmergency(test[0]))
-    else:
-        template = jinja_env.get_template("templates/not_found.html")
-        self.response.write(template.render())
+
+def removePerson(person):
+    for item in person.eservice_info:
+        item.delete()
+    for item in person.econtacts_info:
+        item.delete()
+    person.key.delete()
+
 def mostCommon(infos,attr1,attr1_value,attr2):
     if len(infos) == 0:
         return ""
@@ -97,7 +98,8 @@ class Person(ndb.Model):
     location = ndb.StringProperty(required=True)
     eservice_info = ndb.KeyProperty(repeated=True)
     econtacts_info = ndb.KeyProperty(repeated=True)
-    hotline_info = ndb.KeyProperty(repeated=True)
+
+
 
 class mainPage(webapp2.RequestHandler):
     def get(self):
@@ -110,7 +112,7 @@ class mainPage(webapp2.RequestHandler):
             template = jinja_env.get_template("templates/login.html")
             self.response.write(template.render(template_vars))
         else:
-            logout_link = users.create_logout_url('/setup')
+            logout_link = users.create_logout_url('/')
             template_vars = {
                 "current_user": current_user,
                 "logout_link": logout_link,
@@ -133,7 +135,10 @@ class setupPage(webapp2.RequestHandler):
         current_user = users.get_current_user().email()
         person = Person.query().filter(Person.id == current_user).fetch()
         if len(person) == 0:
-            template = jinja_env.get_template("templates/setup.html")
+            template_vars = {
+                "post_location" : "/setup"
+            }
+            template = jinja_env.get_template("templates/form.html")
             self.response.write(template.render())
         else:
             template = jinja_env.get_template("templates/repeat.html")
@@ -174,7 +179,6 @@ class setupPage(webapp2.RequestHandler):
                 location=loc,
                 eservice_info=[toplace_info[0].put(),toplace_info[1].put()],
                 econtacts_info=[],
-                hotline_info=[],
                 ).put()
         else:
             super_person = super_persons[0]
@@ -185,7 +189,6 @@ class setupPage(webapp2.RequestHandler):
             location=loc,
             eservice_info=[input_keys[0],input_keys[1]],
             econtacts_info=[],
-            hotline_info=[],
             ).put()
 
         template = jinja_env.get_template("templates/finished_setup.html")
@@ -200,51 +203,29 @@ class contactPage(webapp2.RequestHandler):
         self.response.write(template.render())
     def post(self):
         current_user = users.get_current_user().email()
-        peep=getPerson()
-        peep.econtacts_info.append(
+        people=getPerson()
+        people.econtacts_info.append(
             Information(
                 name= "Emergency Contacts",
                 contact=self.request.get('contact'),
                 number=(self.request.get('contact_num'))
                 ).put()
             )
-        peep.hotline_info.append(
-        Information(
-            name="Hotline Information",
-            function=self.request.get('hotline_function'),
-            number=self.request.get('hotline'),
-            ).put()
-            )
         template = jinja_env.get_template("templates/finished_setup.html")
         self.response.write(template.render())
 
-class changePage(webapp2.RequestHandler):
+class editInformationPage(webapp2.RequestHandler):
     def get(self):
-        template = jinja_env.get_template("templates/changes.html")
+        template_vars = {
+            "post_location" : "/editInformation"
+        }
+        template = jinja_env.get_template("templates/form.html")
         self.response.write(template.render())
     def post(self):
-        peep=getPerson()
-        index=findInfo(peep)
-        self.request.get('name')
-        if(peep==-1):
-            Information(
-                name="Police Department",
-                location=loc,
-                number=self.request.get("Police")),
-            Information(
-                name="Fire Department",
-                location=loc,
-                number=self.request.get("Fire"),
-                )
-        peep.location.remove()
-        peep.location.append()
-        peep.eservice_info.remove()
-        peep.eservice_info.append()
-        # for i in range(len(loc or eservice):
-        #     peep.location[i]=        peep.location.append()
-        #     peep.eservice_info[]=        peep.eservice_info.append()
-
-
+        person = getPerson()
+        if person:
+            removePerson(person)
+            self.redirect("/setup")
 
 class choosePage(webapp2.RequestHandler):
     def get(self):
@@ -253,7 +234,10 @@ class choosePage(webapp2.RequestHandler):
 
 class searchPage(webapp2.RequestHandler):
     def get(self):
-        template = jinja_env.get_template("templates/search.html")
+        template_vars = {
+            "post_location" : "/search"
+        }
+        template = jinja_env.get_template("templates/form.html")
         self.response.write(template.render())
     def post(self):
         input_location = [self.request.get("Country"),self.request.get("City"),self.request.get("Zip")]
@@ -262,10 +246,6 @@ class searchPage(webapp2.RequestHandler):
         for person in people:
             locations = person.location.split(":")
             for place in input_location:
-                loginfo(place)
-                loginfo(locations)
-                loginfo(place in locations)
-                loginfo("AIR\n\n\n")
                 if place in locations:
                     test = True
                     touse = person
@@ -302,7 +282,7 @@ app = webapp2.WSGIApplication([
     ('/search',searchPage),
     ('/contacts',contactPage),
     ('/test',testPage),
-    ('/changes',changePage),
+    ('/edit',editPage),
     ('/choose',choosePage),
     ],debug=True
 )
