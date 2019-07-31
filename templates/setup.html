@@ -3,36 +3,39 @@
   <head>
     <meta charset="utf-8">
     <title></title>
-    <link href="https://fonts.googleapis.com/css?family=Abel&display=swap">
-    <link rel="stylesheet" href="/stylesheets/design.css">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
+<link rel="stylesheet" href="https://code.getmdl.io/1.3.0/material.light_blue-blue.min.css" />
+<script defer src="https://code.getmdl.io/1.3.0/material.min.js"></script>
+    <link rel="stylesheet" href="/stylesheets/setup.css">
   </head>
   <body>
-    <center><p>This is the sign up page</p></center>
+    <center><h1>This is the sign up page</h1></center>
     <form class="setup" action="/setup" method="post">
 
       <ul>
-        <li><p>What country do you live in?*</p></li>
-        <input type="text" name="Country" value="" required>
+        <li><p>What country do you live in?*</p></li> <br>
+        <input type="text" name="Country" value="" required> <br>
 
-        <li><p>What city do you live in?*</p></li>
-        <input type="text" name="City" value="" required>
+        <li><p>What city do you live in?*</p></li> <br>
+        <input type="text" name="City" value="" required> <br>
 
-        <li><p>What is your zip code?*</p></li>
-        <input type="text" name="Zip" value="" required>
+        <li><p>What is your zip code?*</p></li> <br>
+        <input type="text" name="Zip" value="" required> <br>
 
-        <li><p>What is the number of your Police Department?*</p></li>
-        <input type="text" name="Police" value="" required>
+        <li><p>What is the number of your Police Department?*</p></li> <br>
+        <input type="text" name="Police" value="" required> <br>
 
-        <li><p>What is the number of your Fire Department?</p></li>
-        <input type="text" name="Fire" value="">
+        <li><p>What is the number of your Fire Department?</p></li> <br>
+        <input type="text" name="Fire" value=""> <br>
       </ul>
 
+<center><h2> Enter emergency contact information </h2></center><br>
+
       <ul>
-          <li><p>Enter emergency contact information</p></li>
-          Name: <input type="text" name="contact" value="">
+          Name: <input type="text" name="contact" value=""> <br> <br>
           Number: <input type="string" name="contact_num" value="">
           <li><p>Enter local hotline numbers:</p></li>
-          Number: <input type="string" name="hotline" value="">
+          Number: <input type="string" name="hotline" value=""> <br> <br>
           Function: <input type="text" name="hotline_function" value="">
         </ul>
 

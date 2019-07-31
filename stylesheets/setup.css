@@ -1,0 +1,35 @@
+body {
+    background: linear-gradient(to bottom, #66ccff 50%, #ffffff 75%);
+    
+    background-attachment: fixed;
+}
+html {
+  height: 100%;
+}
+h1{
+font-size: 200px
+  font-weight: 400;
+  font-family: "Times New Roman", Times, serif;
+  color: white;
+}
+h2{
+  /* font-weight: 400px; */
+  font-family: Arial, Helvetica, serif;
+  color: ;
+}
+p {
+  color: red;
+  font-size: 200%
+}
+p{
+  color: red;
+  font-size: 300%
+}
+button {
+  background-color:#ff99cc;
+  border-radius: 4px;
+  color: white;
+  font-size: 16px;
+  height: 50px;
+  width: 100px;
+}

@@ -3,18 +3,34 @@
   <head>
     <meta charset="utf-8">
     <title>Project Eline </title>
-    <link href="https://fonts.googleapis.com/css?family=Abel&display=swap">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
+<link rel="stylesheet" href="https://code.getmdl.io/1.3.0/material.light_blue-blue.min.css" />
+<script defer src="https://code.getmdl.io/1.3.0/material.min.js"></script>
     <link rel="stylesheet" href="/stylesheets/design.css">
   </head>
   <body>
-<center> <h1>Welcome to Project Eline Webapp </h1> </center>
+<center> <h1>Welcome to Project E-line Webapp </h1> </center>
 
-<div class="flex-container">
+<!-- Wide card with share menu button -->
 
-     <button onclick="window.location.href='/emergency'">The Emergency Page </button>
-      <button onclick="window.location.href='/search'">The Search Page </button>
-      <button onclick="window.location.href='{{logout_link}}'">The Logout Page </button>
 
+<div class="demo-card-wide mdl-card mdl-shadow--2dp">
+  <div class="mdl-card__title">
+    <h2 class="mdl-card__title-text">Project Elime Webapp </h2>
+  </div>
+  <div class="mdl-card__supporting-text">
+We strive to provide you with the best information incase of an emergency
+  </div>
+  <div class="mdl-card__actions mdl-card--border">
+    <a class="mdl-button mdl-button--colored mdl-js-button mdl-js-ripple-effect" href="/emergency">
+      Get Started
+    </a>
+  </div>
+  <div class="mdl-card__menu">
+    <button class="mdl-button mdl-button--icon mdl-js-button mdl-js-ripple-effect">
+      <i class="material-icons">share</i>
+    </button>
+  </div>
 </div>
   </body>
 </html>
