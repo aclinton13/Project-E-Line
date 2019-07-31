@@ -161,13 +161,17 @@ class changePage(webapp2.RequestHandler):
         self.response.write(template.render())
     def post(self):
         peep=getPerson()
-        index=findInfo(peep, self.request.get('name'))
+        index=findInfo(peep) self.request.get('name'))
         if(peep==-1):
             Information(
                 name="Police Department",
                 location=loc,
-                number=self.request.get("Police")
-                ),
+                number=self.request.get("Police")),
+            Information(
+                name="Fire Department",
+                location=loc,
+                number=self.request.get("Fire"),
+                )
         peep.location.remove()
         peep.location.append()
         peep.eservice_info.remove()
