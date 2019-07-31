@@ -57,6 +57,10 @@ def getPerson():
     else:
         return None
 
+def insurePerson(handler):
+    if getPerson() is None:
+        handler.redirect("/setup")
+
 def removePerson(person):
     # for item in person.eservice_info:
     #     item.delete()
@@ -119,11 +123,8 @@ class mainPage(webapp2.RequestHandler):
 class emergencyPage(webapp2.RequestHandler):
     def get(self):
         person = getPerson()
-        if person == None:
-            template = jinja_env.get_template("templates/block.html")
-            self.response.write(template.render())
-        else:
-            self.response.write(handleEmergency(person))
+        insurePerson(self)
+        self.response.write(handleEmergency(person))
 
 class setupPage(webapp2.RequestHandler):
     def get(self):
@@ -189,24 +190,23 @@ class setupPage(webapp2.RequestHandler):
         template = jinja_env.get_template("templates/finished_setup.html")
         self.response.write(template.render())
 
-#Fix or remove
-class contactPage(webapp2.RequestHandler):
+class addContactsPage(webapp2.RequestHandler):
     def get(self):
-        current_user = users.get_current_user().email()
-        person = Person.query().filter(Person.id == current_user).fetch()
-        template = jinja_env.get_template("templates/contacts.html")
+        insurePerson(self)
+        template = jinja_env.get_template("templates/addContacts.html")
         self.response.write(template.render())
     def post(self):
         current_user = users.get_current_user().email()
-        people=getPerson()
-        people.econtacts_info.append(
+        person = getPerson()
+        loc = self.request.get("Country")+":"+self.request.get("City")+":"+self.request.get("Zip")
+        person.econtacts_info.append(
             Information(
-                name= "Emergency Contacts",
-                contact=self.request.get('contact'),
-                number=(self.request.get('contact_num'))
+                name= self.request.get("Name"),
+                location=loc,
+                number = (self.request.get("Number"))
                 ).put()
             )
-        template = jinja_env.get_template("templates/finished_setup.html")
+        template = jinja_env.get_template("templates/finished_adding_contact.html")
         self.response.write(template.render())
 
 class editInformationPage(webapp2.RequestHandler):
@@ -271,7 +271,7 @@ app = webapp2.WSGIApplication([
     ('/setup',setupPage),
     ('/about',aboutPage),
     ('/search',searchPage),
-    ('/contacts',contactPage),
+    ('/addContacts',addContactsPage),
     ('/test',testPage),
     ('/editInformation',editInformationPage),
     ('/choose',choosePage),
