@@ -1,30 +1,33 @@
 body {
-    background: linear-gradient(to bottom, #66ccff 50%, #ffffff 75%);
-
-    background-attachment: fixed;
+  background-color:#66ccff;
 }
+
 html {
   height: 100%;
 }
+
 h1{
-font-size: 200px
+font-size: 80px;
   font-weight: 400;
   font-family: "Times New Roman", Times, serif;
   color: white;
 }
+
 h2{
-  /* font-weight: 400px; */
+
   font-family: Arial, Helvetica, serif;
   color: ;
 }
+
 p {
-  color: red;
+  color: white;
   font-size: 200%
 }
-p{
-  color: red;
-  font-size: 300%
+
+.size{
+  font-size: 5px;
 }
+
 button {
   background-color:#ff99cc;
   border-radius: 4px;
