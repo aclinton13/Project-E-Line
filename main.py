@@ -82,7 +82,6 @@ def mostCommon(infos,attr1,attr1_value,attr2):
     ret = [freq[name] for name in freq]
     ret.sort()
 
-    #loginfo([ret_freq[i] for i in freq if freq[i] == ret[-1]])
     return [ret_freq[i] for i in freq if freq[i] == ret[-1]][0]
 
 
@@ -127,7 +126,6 @@ class emergencyPage(webapp2.RequestHandler):
         else:
             self.response.write(handleEmergency(person))
 
-#Make master user with crowdsourced info, maybe separate model
 class setupPage(webapp2.RequestHandler):
     def get(self):
         current_user = users.get_current_user().email()
@@ -155,17 +153,35 @@ class setupPage(webapp2.RequestHandler):
                 ),
         ]
         toplace_info = []
+        input_keys = []
         for i in range(len(input_info)):
 
             l = Information.query().filter(ndb.AND(Information.name == input_info[i].name,Information.location == input_info[i].location)).fetch()
 
-            input_info[i].put()
+            input_keys.append(input_info[i].put())
 
-            toplace_info.append(mostCommon(l,"name",names[i],"number"))
+            most_common_number = mostCommon(l,"name",names[i],"number")
+            if most_common_number != "":
+                toplace_info.append(mostCommon(l,"name",names[i],"number"))
+            else:
+                toplace_info.append(input_info[i])
+        super_persons = Person.query().filter(Person.id == loc).fetch()
+        if len(super_persons) == 0:
+            Person(
+                id=loc,
+                location=loc,
+                eservice_info=[toplace_info[0].put(),toplace_info[1].put()],
+                econtacts_info=[],
+                hotline_info=[],
+                ).put()
+        else:
+            super_person = super_persons[0]
+            super_person.eservice_info=[toplace_info[0].put(),toplace_info[1].put()]
+
         Person(
             id=str(current_user),
             location=loc,
-            eservice_info=[toplace_info[0].put(),toplace_info[1].put()],
+            eservice_info=[input_keys[0],input_keys[1]],
             econtacts_info=[],
             hotline_info=[],
             ).put()
