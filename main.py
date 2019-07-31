@@ -64,6 +64,8 @@ def findInfo(person,name):
         template = jinja_env.get_template("templates/not_found.html")
         self.response.write(template.render())
 def mostCommon(infos,attr1,attr1_value,attr2):
+    if len(infos) == 0:
+        return ""
     freq = {}
     ret_freq = {}
     for info in infos:
@@ -108,7 +110,7 @@ class mainPage(webapp2.RequestHandler):
             template = jinja_env.get_template("templates/login.html")
             self.response.write(template.render(template_vars))
         else:
-            logout_link = users.create_logout_url('/setup')
+            logout_link = users.create_logout_url('/')
             template_vars = {
                 "current_user": current_user,
                 "logout_link": logout_link,
@@ -216,9 +218,9 @@ class contactPage(webapp2.RequestHandler):
         template = jinja_env.get_template("templates/finished_setup.html")
         self.response.write(template.render())
 
-class changePage(webapp2.RequestHandler):
+class editPage(webapp2.RequestHandler):
     def get(self):
-        template = jinja_env.get_template("templates/changes.html")
+        template = jinja_env.get_template("templates/edit.html")
         self.response.write(template.render())
     def post(self):
         peep=getPerson()
@@ -238,9 +240,6 @@ class changePage(webapp2.RequestHandler):
         peep.location.append()
         peep.eservice_info.remove()
         peep.eservice_info.append()
-        # for i in range(len(loc or eservice):
-        #     peep.location[i]=        peep.location.append()
-        #     peep.eservice_info[]=        peep.eservice_info.append()
 
 
 
@@ -300,7 +299,7 @@ app = webapp2.WSGIApplication([
     ('/search',searchPage),
     ('/contacts',contactPage),
     ('/test',testPage),
-    ('/changes',changePage),
+    ('/edit',editPage),
     ('/choose',choosePage),
     ],debug=True
 )
