@@ -1,6 +1,5 @@
 body {
-    background: linear-gradient(to bottom, #66ccff 0%, #ffffff 100%);
-    background-attachment: fixed;
+    background-color:#66ccff;
 }
 html {
   height: 100%;
@@ -11,7 +10,7 @@ h1{
   color: white;
 }
 p {
-  color: red;
+  color: white;
   font-size: 200%
 }
 button {
@@ -22,18 +21,13 @@ button {
   height: 50px;
   width: 100px;
 }
-.flex-container {
-  display: flex;
-  flex-direction: column;
-  justify-content: space-between;
-  align-items: center;
-}
+
 .demo-card-wide.mdl-card {
-  width: 550px;
+  width: 575px;
 }
 .demo-card-wide > .mdl-card__title {
   color: #fff;
-  height: 545px;
+  height: 575px;
   background: url('https://www.houseofswitzerland.org/sites/default/files/styles/portrait/public/story/portrait/Gallia%20et%20son%20tonnelet%20%C2%A9%20Iris%20Kuerschner%2C%20www.powerpress.ch%202%20%28Large%29.jpg?h=4a7d1ed4&itok=xyYCkZ3R') center / cover;
 }
 .demo-card-wide > .mdl-card__menu {
