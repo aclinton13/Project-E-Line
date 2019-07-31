@@ -282,7 +282,7 @@ app = webapp2.WSGIApplication([
     ('/search',searchPage),
     ('/contacts',contactPage),
     ('/test',testPage),
-    ('/edit',editPage),
+    ('/editInformation',editInformationPage),
     ('/choose',choosePage),
     ],debug=True
 )

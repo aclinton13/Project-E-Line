@@ -3,35 +3,38 @@
   <head>
     <meta charset="utf-8">
     <title>Change info</title>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
+<link rel="stylesheet" href="https://code.getmdl.io/1.3.0/material.light_blue-blue.min.css" />
+<script defer src="https://code.getmdl.io/1.3.0/material.min.js"></script>
+    <link rel="stylesheet" href="/stylesheets/form.css">
   </head>
   <body>
-    Change personal Information
+    <center>
+    <h1> Change personal Information </h1>
     <form class="" action={{post_location}} method="post">
 
+  <ul>
+        <p><b>Change country</b></p> <br>
+        <input type="text" name="Country" value="" > <br>
 
-      <ul>
-        <li><p>Change country</p></li>
-        <input type="text" name="Country" value="" >
+        <p><b> Change city</b> </p> <br>
+        <input type="text" name="City" value="" > <br>
 
-        <li><p>Change city</p></li>
-        <input type="text" name="City" value="" >
+        <p><b> Change zip code</b> </p> <br>
+        <input type="text" name="Zip" value="" > <br>
 
-        <li><p>Change zip code</p></li>
-        <input type="text" name="Zip" value="" >
+        <p><b> Change number of police department</b> </p> <br>
+        <input type="text" name="Police" value="" > <br>
 
-        <li><p>Change number of police department</p></li>
-        <input type="text" name="Police" value="" >
-
-        <li><p>Change number of fire department</p></li>
+        <p><b> Change number of fire department</b> </p> <br>
         <input type="text" name="Fire" value="" >
-      </ul>
+      </ul><br>
 
       <input type="Submit" name="submit" value="Finish Setup">
+
     </form>
     <br>
     <a href="/contacts">Input emergency contact information</a>
-
-
-
+</center>
   </body>
 </html>
