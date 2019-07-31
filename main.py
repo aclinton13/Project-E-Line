@@ -64,6 +64,8 @@ def findInfo(person,name):
         template = jinja_env.get_template("templates/not_found.html")
         self.response.write(template.render())
 def mostCommon(infos,attr1,attr1_value,attr2):
+    if len(infos) == 0:
+        return ""
     freq = {}
     ret_freq = {}
     for info in infos:

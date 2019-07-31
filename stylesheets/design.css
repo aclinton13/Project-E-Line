@@ -1,6 +1,5 @@
 body {
-    background: linear-gradient(to bottom, #66ccff 0%, #ffffff 100%);
-    background-attachment: fixed;
+    background-color:#66ccff;
 }
 html {
   height: 100%;
