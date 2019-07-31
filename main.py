@@ -21,6 +21,9 @@ def handleEmergency(person):
     template = jinja_env.get_template("templates/emergency.html")
     return template.render(template_vars)
 def listContains(li,subli):
+    loginfo(li)
+    loginfo(subli)
+    loginfo("EARTH\n\n\n")
     if len(subli) > len(li):
         return False
     consistent = -1
@@ -60,39 +63,6 @@ def findInfo(person,name):
     else:
         template = jinja_env.get_template("templates/not_found.html")
         self.response.write(template.render())
-
-class Information(ndb.Model):
-    name = ndb.StringProperty(required=True)
-    location = ndb.StringProperty(required=True)
-    number = ndb.StringProperty(required=True)
-
-class Person(ndb.Model):
-    id = ndb.StringProperty(required=True)
-    location = ndb.StringProperty(required=True)
-    eservice_info = ndb.KeyProperty(repeated=True)
-    econtacts_info = ndb.KeyProperty(repeated=True)
-    hotline_info = ndb.KeyProperty(repeated=True)
-
-class mainPage(webapp2.RequestHandler):
-    def get(self):
-        current_user = users.get_current_user()
-        logout_link = users.create_logout_url('/setup')
-        template_vars = {
-            "current_user": current_user,
-            "logout_link": logout_link,
-        }
-        template = jinja_env.get_template("templates/eline.html")
-        self.response.write(template.render(template_vars))
-
-class emergencyPage(webapp2.RequestHandler):
-    def get(self):
-        person = getPerson()
-        if person == None:
-            template = jinja_env.get_template("templates/block.html")
-            self.response.write(template.render())
-        else:
-            self.response.write(handleEmergency(person))
-
 def mostCommon(infos,attr1,attr1_value,attr2):
     freq = {}
     ret_freq = {}
@@ -116,6 +86,48 @@ def mostCommon(infos,attr1,attr1_value,attr2):
     return [ret_freq[i] for i in freq if freq[i] == ret[-1]][0]
 
 
+class Information(ndb.Model):
+    name = ndb.StringProperty(required=True)
+    location = ndb.StringProperty(required=True)
+    number = ndb.StringProperty(required=True)
+
+class Person(ndb.Model):
+    id = ndb.StringProperty(required=True)
+    location = ndb.StringProperty(required=True)
+    eservice_info = ndb.KeyProperty(repeated=True)
+    econtacts_info = ndb.KeyProperty(repeated=True)
+    hotline_info = ndb.KeyProperty(repeated=True)
+
+class mainPage(webapp2.RequestHandler):
+    def get(self):
+        current_user = users.get_current_user()
+        if not current_user:
+            login_link = users.create_login_url('/setup')
+            template_vars = {
+                "login_link": login_link,
+            }
+            template = jinja_env.get_template("templates/login.html")
+            self.response.write(template.render(template_vars))
+        else:
+            logout_link = users.create_logout_url('/setup')
+            template_vars = {
+                "current_user": current_user,
+                "logout_link": logout_link,
+            }
+            template = jinja_env.get_template("templates/eline.html")
+            self.response.write(template.render(template_vars))
+
+#Make it display everything
+class emergencyPage(webapp2.RequestHandler):
+    def get(self):
+        person = getPerson()
+        if person == None:
+            template = jinja_env.get_template("templates/block.html")
+            self.response.write(template.render())
+        else:
+            self.response.write(handleEmergency(person))
+
+#Make master user with crowdsourced info, maybe separate model
 class setupPage(webapp2.RequestHandler):
     def get(self):
         current_user = users.get_current_user().email()
@@ -149,11 +161,7 @@ class setupPage(webapp2.RequestHandler):
 
             input_info[i].put()
 
-            # if len(l) > 20:
-            #     l[randint(len(l)-1)].delete
             toplace_info.append(mostCommon(l,"name",names[i],"number"))
-        loginfo(toplace_info)
-        loginfo("UFO\n\n\n")
         Person(
             id=str(current_user),
             location=loc,
@@ -165,6 +173,7 @@ class setupPage(webapp2.RequestHandler):
         template = jinja_env.get_template("templates/finished_setup.html")
         self.response.write(template.render())
 
+#Fix or remove
 class contactPage(webapp2.RequestHandler):
     def get(self):
         current_user = users.get_current_user().email()
@@ -192,10 +201,20 @@ class searchPage(webapp2.RequestHandler):
         self.response.write(template.render())
     def post(self):
         input_location = [self.request.get("Country"),self.request.get("City"),self.request.get("Zip")]
-        locations = Person.query().fetch()
-        test = filter(lambda x: listContains(x.location.split(":"),input_location),locations)
-        if len(test) == 1:
-            self.response.write(handleEmergency(test[0]))
+        people = Person.query().fetch()
+        test = False
+        for person in people:
+            locations = person.location.split(":")
+            for place in input_location:
+                loginfo(place)
+                loginfo(locations)
+                loginfo(place in locations)
+                loginfo("AIR\n\n\n")
+                if place in locations:
+                    test = True
+                    touse = person
+        if test:
+            self.response.write(handleEmergency(touse))
         else:
             template = jinja_env.get_template("templates/not_found.html")
             self.response.write(template.render())
