@@ -82,7 +82,7 @@ def mostCommon(infos,attr1,attr1_value,attr2):
     ret = [freq[name] for name in freq]
     ret.sort()
 
-    return [ret_freq[i] for i in freq if freq[i] == ret[-1]][0]
+    # return [ret_freq[i] for i in freq if freq[i] == ret[-1]][0]
 
 
 class Information(ndb.Model):
@@ -124,6 +124,13 @@ class emergencyPage(webapp2.RequestHandler):
             self.response.write(template.render())
         else:
             self.response.write(handleEmergency(person))
+        for i in person.eservice_info:
+            person.eservice_info[i].get().name
+            person.eservice_info[i].get().location.split(':')
+            person.eservice_info[i].get().number
+
+
+
 
 class setupPage(webapp2.RequestHandler):
     def get(self):
@@ -165,24 +172,22 @@ class setupPage(webapp2.RequestHandler):
             else:
                 toplace_info.append(input_info[i])
         super_persons = Person.query().filter(Person.id == loc).fetch()
-        if len(super_persons) == 0:
-            Person(
-                id=loc,
-                location=loc,
-                eservice_info=[toplace_info[0].put(),toplace_info[1].put()],
-                econtacts_info=[],
-                hotline_info=[],
-                ).put()
-        else:
-            super_person = super_persons[0]
-            super_person.eservice_info=[toplace_info[0].put(),toplace_info[1].put()]
+        # if len(super_persons) == 0:
+        #     Person(
+        #         id=loc,
+        #         location=loc,
+        #         eservice_info=[toplace_info[0].put(),toplace_info[1].put()],
+        #         econtacts_info=[],
+        #         ).put()
+        # else:
+        #     super_person = super_persons[0]
+        #     super_person.eservice_info=[toplace_info[0].put(),toplace_info[1].put()]
 
         Person(
             id=str(current_user),
             location=loc,
             eservice_info=[input_keys[0],input_keys[1]],
             econtacts_info=[],
-            hotline_info=[],
             ).put()
 
         template = jinja_env.get_template("templates/finished_setup.html")
@@ -214,7 +219,7 @@ class changePage(webapp2.RequestHandler):
         self.response.write(template.render())
     def post(self):
         people=getPerson()
-        index=findInfo(people)
+        # index=findInfo(people)
         self.request.get('name')
         if(people==-1):
             Information(
@@ -230,6 +235,7 @@ class changePage(webapp2.RequestHandler):
         people.location.append()
         people.eservice_info.remove()
         people.eservice_info.append()
+
         # for i in range(len(loc or eservice):
         #     people.location[i]=        people.location.append()
         #     people.eservice_info[]=        people.eservice_info.append()
