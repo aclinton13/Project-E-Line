@@ -263,7 +263,7 @@ class removeContactsPage(webapp2.RequestHandler):
 class editInformationPage(webapp2.RequestHandler):
     def get(self):
         template_vars = {
-            "post_location" : "/"
+            "post_location" : "/editInformation"
         }
         template = jinja_env.get_template("templates/form.html")
         self.response.write(template.render(template_vars))

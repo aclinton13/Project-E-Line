@@ -18,7 +18,7 @@
   <body>
     <center>
     <h1> Enter Personal Information </h1>
-
+<form action="{{post_location}}" method="post">
         <p class="fix"><b>Enter country</b></p>
         <input type="text" name="Country" value="" required placeholder='Country name'> <br>
 
@@ -41,7 +41,8 @@
              pattern="[0-9]{3}-[0-9]{3}-[0-9]{4}"
              required placeholder="e.g: 123-456-7890">
       <br><br>
-      <input type="Submit" name="submit" value="Finished">
+        <input type="submit" name="submit" value="Finished">
+
 
     </form>
 </center>
