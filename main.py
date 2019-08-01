@@ -169,7 +169,6 @@ class setupPage(webapp2.RequestHandler):
             else:
                 toplace_info.append(input_info[i])
         super_persons = Person.query().filter(Person.id == loc).fetch()
-<<<<<<< HEAD
         # if len(super_persons) == 0:
         #     Person(
         #         id=loc,
@@ -180,7 +179,6 @@ class setupPage(webapp2.RequestHandler):
         # else:
         #     super_person = super_persons[0]
         #     super_person.eservice_info=[toplace_info[0].put(),toplace_info[1].put()]
-=======
         if len(super_persons) == 0:
             Person(
                 id=loc,
@@ -191,7 +189,6 @@ class setupPage(webapp2.RequestHandler):
         else:
             super_person = super_persons[0]
             super_person.eservice_info=[toplace_info[0].put(),toplace_info[1].put()]
->>>>>>> 0673e89cb1f941af6fea588980d249d6f0e6f163
 
         Person(
             id=str(current_user),
@@ -224,7 +221,6 @@ class addContactsPage(webapp2.RequestHandler):
 
 class editInformationPage(webapp2.RequestHandler):
     def get(self):
-<<<<<<< HEAD
         template = jinja_env.get_template("templates/changes.html")
         self.response.write(template.render())
     def post(self):
@@ -250,15 +246,12 @@ class editInformationPage(webapp2.RequestHandler):
         #     people.location[i]=        people.location.append()
         #     people.eservice_info[]=        people.eservice_info.append()
 
-
-=======
         template_vars = {
             "post_location" : "/setup"
         }
         removePerson(getPerson())
         template = jinja_env.get_template("templates/form.html")
         self.response.write(template.render(template_vars))
->>>>>>> 0673e89cb1f941af6fea588980d249d6f0e6f163
 
 class choosePage(webapp2.RequestHandler):
     def get(self):
