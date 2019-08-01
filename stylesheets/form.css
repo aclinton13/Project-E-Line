@@ -29,6 +29,13 @@ p {
 .fix{
   margin: 20px;
 }
+.div1{
+  margin: 50px;
+}
+
+.space{
+  line-height:0.9em;
+}
 
 .size{
   font-size: 5px;
