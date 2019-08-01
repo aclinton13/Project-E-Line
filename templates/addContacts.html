@@ -9,7 +9,7 @@
   <body>
     <h1>Add Emergency Contact<h1>
 
-    <form class='setup' action='/setup' method='post'>
+    <form class='setup' action='/addContacts' method='post'>
 
     <ul>
       <p>Emergency contact's name</p>
@@ -25,7 +25,9 @@
       <input type="text" name="Zip" value="" >
 
       <p>Emergency contact's number</p>
-      <input type="text" name="Number" value="" >
+      <input type="tel" id="number" name="Number"
+             pattern="[0-9]{3}-[0-9]{3}-[0-9]{4}"
+             required>
     </ul>
 
     <br>
