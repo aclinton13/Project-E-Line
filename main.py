@@ -180,7 +180,6 @@ class setupPage(webapp2.RequestHandler):
         else:
             super_person = super_persons[0]
             super_person.eservice_info=[toplace_info[0].put(),toplace_info[1].put()]
-
         Person(
             id=str(current_user),
             location=loc,
@@ -212,27 +211,6 @@ class addContactsPage(webapp2.RequestHandler):
 
 class editInformationPage(webapp2.RequestHandler):
     def get(self):
-        template = jinja_env.get_template("templates/changes.html")
-        self.response.write(template.render())
-    def post(self):
-        people=getPerson()
-        # index=findInfo(people)
-        self.request.get('name')
-        if(people==-1):
-            Information(
-                name="Police Department",
-                location=loc,
-                number=self.request.get("Police")),
-            Information(
-                name="Fire Department",
-                location=loc,
-                number=self.request.get("Fire"),
-                )
-        people.location.remove()
-        people.location.append()
-        people.eservice_info.remove()
-        people.eservice_info.append()
-
         template_vars = {
             "post_location" : "/setup"
         }
