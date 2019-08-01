@@ -15,8 +15,16 @@ from google.appengine.ext import ndb
 from google.appengine.api import users
 
 def handleEmergency(person):
+    eservices = []
+    econtacts = []
+    for eservice_key in person.eservice_info:
+        eservices.append(eservice_key.get())
+    for econtacts_key in person.econtacts_info:
+        econtacts.append(econtacts_key.get())
     template_vars = {
         "person": person,
+        "eservices": eservices,
+        "econtacts": econtacts,
     }
     template = jinja_env.get_template("templates/emergency.html")
     return template.render(template_vars)
@@ -52,7 +60,7 @@ def listContains(li,subli):
 def getPerson():
     current_user = users.get_current_user()
     person = Person.query().filter(Person.id == current_user.email()).fetch()
-    if len(person) == 1:
+    if len(person) > 0:
         return person[0]
     else:
         return None
@@ -70,7 +78,7 @@ def removePerson(person):
 
 def mostCommon(infos,attr1,attr1_value,attr2):
     if len(infos) == 0:
-        return ""
+        return None
     freq = {}
     ret_freq = {}
     for info in infos:
@@ -88,8 +96,7 @@ def mostCommon(infos,attr1,attr1_value,attr2):
                 freq[val] = 1
     ret = [freq[name] for name in freq]
     ret.sort()
-
-    # return [ret_freq[i] for i in freq if freq[i] == ret[-1]][0]
+    return [ret_freq[i] for i in freq if freq[i] == ret[-1]][0]
 
 
 class Information(ndb.Model):
@@ -164,9 +171,13 @@ class setupPage(webapp2.RequestHandler):
             input_keys.append(input_info[i].put())
 
             most_common_number = mostCommon(l,"name",names[i],"number")
-            if most_common_number != "":
-                toplace_info.append(mostCommon(l,"name",names[i],"number"))
+            loginfo(most_common_number)
+            loginfo("K\n\n\n")
+            if most_common_number != None:
+                toplace_info.append(most_common_number)
             else:
+                loginfo(input_info)
+                loginfo("J\n\n\n")
                 toplace_info.append(input_info[i])
         super_persons = Person.query().filter(Person.id == loc).fetch()
 
@@ -187,8 +198,13 @@ class setupPage(webapp2.RequestHandler):
             econtacts_info=[],
             ).put()
 
-        template = jinja_env.get_template("templates/finished_setup.html")
-        self.response.write(template.render())
+        template_vars = {
+            "top": "Setup complete",
+            "redirect": "/emergency",
+            "explaination": "to see the emergency page"
+        }
+        template = jinja_env.get_template("templates/finished.html")
+        self.response.write(template.render(template_vars))
 
 class addContactsPage(webapp2.RequestHandler):
     def get(self):
@@ -206,8 +222,44 @@ class addContactsPage(webapp2.RequestHandler):
                 number = (self.request.get("Number"))
                 ).put()
             )
-        template = jinja_env.get_template("templates/finished_adding_contact.html")
-        self.response.write(template.render())
+        person.put()
+        template_vars = {
+            "top": "Emergency contact added",
+            "redirect": "/addContacts",
+            "explaination": "add another emergency contact"
+        }
+        template = jinja_env.get_template("templates/finished.html")
+        self.response.write(template.render(template_vars))
+
+class removeContactsPage(webapp2.RequestHandler):
+    def get(self):
+        person = getPerson()
+        insurePerson(self)
+        econtacts = []
+        for econtacts_key in person.econtacts_info:
+            econtacts.append(econtacts_key.get())
+        template_vars = {
+            "person": person,
+            "econtacts": econtacts,
+        }
+        template = jinja_env.get_template("templates/removeContacts.html")
+        self.response.write(template.render(template_vars))
+    def post(self):
+        current_user = users.get_current_user().email()
+        person = getPerson()
+        pos = int(self.request.get("position"))
+        person.econtacts_info[pos].delete()
+        del person.econtacts_info[pos]
+        loginfo(person.econtacts_info)
+        loginfo("i\n\n\n")
+        person.put()
+        template_vars = {
+            "top": "Emergency contact removed",
+            "redirect": "/removeContacts",
+            "explaination": "remove another emergency contact"
+        }
+        template = jinja_env.get_template("templates/finished.html")
+        self.response.write(template.render(template_vars))
 
 class editInformationPage(webapp2.RequestHandler):
     def get(self):
@@ -225,11 +277,8 @@ class choosePage(webapp2.RequestHandler):
 
 class searchPage(webapp2.RequestHandler):
     def get(self):
-        template_vars = {
-            "post_location" : "/search"
-        }
-        template = jinja_env.get_template("templates/form.html")
-        self.response.write(template.render(template_vars))
+        template = jinja_env.get_template("templates/search.html")
+        self.response.write(template.render())
     def post(self):
         input_location = [self.request.get("Country"),self.request.get("City"),self.request.get("Zip")]
         people = Person.query().fetch()
@@ -272,6 +321,7 @@ app = webapp2.WSGIApplication([
     ('/about',aboutPage),
     ('/search',searchPage),
     ('/addContacts',addContactsPage),
+    ('/removeContacts',removeContactsPage),
     ('/test',testPage),
     ('/editInformation',editInformationPage),
     ('/choose',choosePage),

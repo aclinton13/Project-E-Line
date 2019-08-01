@@ -9,8 +9,30 @@
     <link rel="stylesheet" href="/stylesheets/form.css">
   </head>
   <body>
-    
-    <p>This is where the emergency data is outputed</p>
-    <p>{{person.eservice_info[0].get().name}}</p>
+    <p><strong>EMERGENCY SERVICES:</strong></p>
+    <br>
+    {% for eservice in eservices %}
+    <h2>{{eservice.name}}</h2>
+    <p>Phone Number: {{eservice.number}}</p>
+    <p>Zip: {{eservice.location.split(":")[-1]}}</p>
+    <br>
+    <br>
+    {% endfor %}
+    <br>
+    <br>
+    {% if econtacts|length != 0 %}
+    <p><strong>EMERGENCY CONTACTS:</strong></p>
+    <br>
+    {% for econtact in econtacts %}
+    <h2>{{econtact.name}}</h2>
+    <p>Phone Number: {{econtact.number}}</p>
+    <p>Zip: {{econtact.location.split(":")[-1]}}</p>
+    <br>
+    <br>
+    {% endfor %}
+    {% endif %}
+
   </body>
+  <br>
+  <a href="/">Back</a>
 </html>
