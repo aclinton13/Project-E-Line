@@ -1,0 +1,44 @@
+body {
+  background-color:#66ccff;
+}
+
+html {
+  height: 100%;
+}
+
+h1{
+font-size: 80px;
+  font-weight: 400;
+  font-family: "Times New Roman", Times, serif;
+  color: white;
+}
+
+.mdl-card__title-text{
+
+  font-family: Arial, Helvetica, serif;
+  color: #ff99cc ;
+}
+
+p {
+  color: white;
+  font-size: 200%
+}
+
+.size{
+  font-size: 5px;
+}
+
+button{
+display: flex;
+justify-content: center;
+background-color: lightgreen;
+border-radius: 8px;
+color: white;
+font-size: 16px;
+height: 100px;
+width: 200px;
+display: inline-block;
+}
+button:hover {
+  box-shadow: 0 12px 16px 0 rgba(0,0,0,0.24), 0 17px 50px 0 rgba(0,0,0,0.19);
+}
