@@ -1,0 +1,37 @@
+body {
+  background-color:#66ccff;
+}
+
+html {
+  height: 100%;
+}
+h1{
+font-size: 80px;
+  font-weight: 400;
+  font-family: "Times New Roman", Times, serif;
+  color: black;
+}
+
+.mdl-card__title-text{
+
+  font-family: Arial, Helvetica, serif;
+  color: #ff99cc ;
+}
+
+.demo-card-wide.mdl-card {
+  width: 500px;
+}
+.demo-card-wide > .mdl-card__title {
+  height: 500px;
+}
+
+
+.demo-card-square.mdl-card {
+  width: 500px;
+}
+.demo-card-square > .mdl-card__title {
+  height: 500px;
+}
+.mdl-card__title{
+  flex-direction: column;
+}
