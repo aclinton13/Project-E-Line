@@ -28,10 +28,11 @@
           </div>
         </div>
       </div>
+      {% if econtacts|length != 0 %}
                     <h2>EMERGENCY CONTACTS:</h2>
       <div class="demo-card-square mdl-card mdl-shadow--2dp">
         <div class="mdl-card__actions mdl-card--border">
-                {% if econtacts|length != 0 %}
+
 
 
           <div class="mdl-card__title">
@@ -41,13 +42,15 @@
               <p>Phone Number: {{econtact.number}}</p>
               <p>Zip: {{econtact.location.split(":")[-1]}}</p>
             </div>  {% endfor %}
-              {% endif %}
+
         </div>
-        <a class="mdl-button mdl-button--colored mdl-js-button mdl-js-ripple-effect" href="/">Back </a>
-        </a>
       </div>
 
 </div>
+    {% endif %}
+    <a class="mdl-button mdl-button--contaned mdl-js-button mdl-js-ripple-effect" href="/">
+      Back
+    </a>
        </center>
 
 </html>
