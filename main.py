@@ -263,10 +263,69 @@ class removeContactsPage(webapp2.RequestHandler):
 class editInformationPage(webapp2.RequestHandler):
     def get(self):
         template_vars = {
-            "post_location" : "/setup"
+            "post_location" : "/"
         }
-        removePerson(getPerson())
         template = jinja_env.get_template("templates/form.html")
+        self.response.write(template.render(template_vars))
+    def post(self):
+        removePerson(getPerson())
+        names = ["Police Department","Fire Department"]
+        current_user = users.get_current_user().email()
+        loc = self.request.get("Country")+":"+self.request.get("City")+":"+self.request.get("Zip")
+        input_info =[
+            Information(
+                name="Police Department",
+                location=loc,
+                number=self.request.get("Police")
+                ),
+            Information(
+                name="Fire Department",
+                location=loc,
+                number=self.request.get("Fire")
+                ),
+        ]
+        toplace_info = []
+        input_keys = []
+        for i in range(len(input_info)):
+
+            l = Information.query().filter(ndb.AND(Information.name == input_info[i].name,Information.location == input_info[i].location)).fetch()
+
+            input_keys.append(input_info[i].put())
+
+            most_common_number = mostCommon(l,"name",names[i],"number")
+            loginfo(most_common_number)
+            loginfo("K\n\n\n")
+            if most_common_number != None:
+                toplace_info.append(most_common_number)
+            else:
+                loginfo(input_info)
+                loginfo("J\n\n\n")
+                toplace_info.append(input_info[i])
+        super_persons = Person.query().filter(Person.id == loc).fetch()
+
+        if len(super_persons) == 0:
+            Person(
+                id=loc,
+                location=loc,
+                eservice_info=[toplace_info[0].put(),toplace_info[1].put()],
+                econtacts_info=[],
+                ).put()
+        else:
+            super_person = super_persons[0]
+            super_person.eservice_info=[toplace_info[0].put(),toplace_info[1].put()]
+        Person(
+            id=str(current_user),
+            location=loc,
+            eservice_info=[input_keys[0],input_keys[1]],
+            econtacts_info=[],
+            ).put()
+
+        template_vars = {
+            "top": "Changed Information",
+            "redirect": "/emergency",
+            "explaination": "to see the emergency page"
+        }
+        template = jinja_env.get_template("templates/finished.html")
         self.response.write(template.render(template_vars))
 
 class choosePage(webapp2.RequestHandler):
