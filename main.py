@@ -70,8 +70,6 @@ def insurePerson(handler):
         handler.redirect("/setup")
 
 def removePerson(person):
-    # for item in person.eservice_info:
-    #     item.delete()
     for item in person.econtacts_info:
         item.delete()
     person.key.delete()
@@ -236,8 +234,9 @@ class removeContactsPage(webapp2.RequestHandler):
         person = getPerson()
         insurePerson(self)
         econtacts = []
-        for econtacts_key in person.econtacts_info:
-            econtacts.append(econtacts_key.get())
+        if len(person.econtacts_info) != 0:
+            for econtacts_key in person.econtacts_info:
+                econtacts.append(econtacts_key.get())
         template_vars = {
             "person": person,
             "econtacts": econtacts,
