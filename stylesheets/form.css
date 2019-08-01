@@ -23,6 +23,19 @@ p {
   color: white;
   font-size: 200%
 }
+.exl{
+  margin: 35px;
+}
+.fix{
+  margin: 20px;
+}
+.div1{
+  margin: 50px;
+}
+
+.space{
+  line-height:0.9em;
+}
 
 .size{
   font-size: 5px;

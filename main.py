@@ -199,7 +199,7 @@ class setupPage(webapp2.RequestHandler):
         template_vars = {
             "top": "Setup complete",
             "redirect": "/emergency",
-            "explaination": "to see the emergency page"
+            "explaination": "Emergency Page"
         }
         template = jinja_env.get_template("templates/finished.html")
         self.response.write(template.render(template_vars))
@@ -263,7 +263,7 @@ class removeContactsPage(webapp2.RequestHandler):
 class editInformationPage(webapp2.RequestHandler):
     def get(self):
         template_vars = {
-            "post_location" : "/"
+            "post_location" : "/editInformation"
         }
         template = jinja_env.get_template("templates/form.html")
         self.response.write(template.render(template_vars))

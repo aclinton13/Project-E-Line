@@ -8,18 +8,17 @@
 <script defer src="https://code.getmdl.io/1.3.0/material.min.js"></script>
 <link rel="stylesheet" href="/stylesheets/button.css">
 <!-- <link rel="stylesheet" href="/stylesheets/form.css"> -->
+<link rel="icon" href="/images/favicon.png" type="image/x-icon">
+
   </head>
   <body>
     <br>
-    <p>  {{top}}</p>
+    <p>{{top}}</p>
       <br>
-      <center>  <button type="button" name="button"> <a href='/'>Main Page</a></button></center>
-<br>
-    <center>  <button type="button" name="button"> <a href={{redirect}}>{{explaination}}</a></button></center>
+      <center>  <a href='/'><button type="button" name="button">  Main Page</button></a></center>
 
-<!--
-    <p>Plese click <a href="/">here</a> to go back to the main page
-      <br>
-      or <a href={{redirect}}>here</a> to {{explaination}}</p> -->
+      <center>  <a href={{redirect}}><button type="button" name="button"> {{explaination}}</button></a></center>
+
+
   </body>
 </html>
