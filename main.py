@@ -229,10 +229,9 @@ class addContactsPage(webapp2.RequestHandler):
         template = jinja_env.get_template("templates/finished.html")
         self.response.write(template.render(template_vars))
 
-class removeContactsPage(webapp2.RequestHandler):
+class removeContactPage(webapp2.RequestHandler):
     def get(self):
-        person = getPerson()
-        insurePerson(self)
+        toremove = self.request.get("contact")
         econtacts = []
         if len(person.econtacts_info) != 0:
             for econtacts_key in person.econtacts_info:
@@ -241,7 +240,7 @@ class removeContactsPage(webapp2.RequestHandler):
             "person": person,
             "econtacts": econtacts,
         }
-        template = jinja_env.get_template("templates/removeContacts.html")
+        template = jinja_env.get_template("templates/emergency.html")
         self.response.write(template.render(template_vars))
     def post(self):
         current_user = users.get_current_user().email()
@@ -259,6 +258,8 @@ class removeContactsPage(webapp2.RequestHandler):
         }
         template = jinja_env.get_template("templates/finished.html")
         self.response.write(template.render(template_vars))
+
+
 
 class editInformationPage(webapp2.RequestHandler):
     def get(self):
@@ -379,7 +380,7 @@ app = webapp2.WSGIApplication([
     ('/about',aboutPage),
     ('/search',searchPage),
     ('/addContacts',addContactsPage),
-    ('/removeContacts',removeContactsPage),
+    ('/removeContact',removeContactsPage),
     ('/test',testPage),
     ('/editInformation',editInformationPage),
     ('/choose',choosePage),

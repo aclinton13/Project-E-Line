@@ -22,37 +22,48 @@
               {% for eservice in eservices %}
               <h2 class="mdl-card__title-text"> <h2>{{eservice.name}}</h2>
         <div class="mdl-card__supporting-text">
-
           <p>Phone Number: {{eservice.number}}</p>
           <p>Zip: {{eservice.location.split(":")[-1]}}</p>
         </div>
             {% endfor %}
+            <a class="mdl-button mdl-button--contaned mdl-js-button mdl-js-ripple-effect" href="/editInformation">
+              Change Info
+            </a>
           </div>
         </div>
       </div>
       {% if econtacts|length != 0 %}
-                    <h2>EMERGENCY CONTACTS:</h2>
+      <h2>EMERGENCY CONTACTS:</h2>
+      {% for econtact in econtacts %}
       <div class="demo-card-square mdl-card mdl-shadow--2dp">
         <div class="mdl-card__actions mdl-card--border">
-
-
-
           <div class="mdl-card__title">
-                {% for econtact in econtacts %}
-  <h2 class="mdl-card__title-text"> <h2>{{econtact.name}}</h2>
+            <h2 class="mdl-card__title-text"> <h2>{{econtact.name}}</h2>
             <div class="mdl-card__supporting-text">
               <p>Phone Number: {{econtact.number}}</p>
               <p>Zip: {{econtact.location.split(":")[-1]}}</p>
-            </div>  {% endfor %}
-
-        </div>
+              <div class="mdl-card__action">
+                <a class="mdl-button mdl-button--contaned mdl-js-button mdl-js-ripple-effect" href="/editContact?contact={{econtact.name}}">
+                  Edit
+                </a>
+                <a class="mdl-button mdl-button--contaned mdl-js-button mdl-js-ripple-effect" href="/removeContact?contact={{econtact.name}}">
+                  Remove
+                </a>
+              </div>
+            </div>
+          </div>
       </div>
-
 </div>
+<br>
+      {% endfor %}
     {% endif %}
     <a class="mdl-button mdl-button--contaned mdl-js-button mdl-js-ripple-effect" href="/">
       Home
     </a>
+    <a class="mdl-button mdl-button--contaned mdl-js-button mdl-js-ripple-effect" href="/addContacts">
+      Add Emergency Contact
+    </a>
+    <br>
        </center>
 
 </html>
