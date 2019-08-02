@@ -6,14 +6,19 @@
     <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
 <link rel="stylesheet" href="https://code.getmdl.io/1.3.0/material.light_blue-blue.min.css" />
 <script defer src="https://code.getmdl.io/1.3.0/material.min.js"></script>
-    <link rel="stylesheet" href="/stylesheets/form.css">
+<link rel="stylesheet" href="/stylesheets/button.css">
+<!-- <link rel="stylesheet" href="/stylesheets/form.css"> -->
+<link rel="icon" href="/images/favicon.png" type="image/x-icon">
+
   </head>
   <body>
     <br>
     <p>{{top}}</p>
       <br>
-    <p>For Main Page click <a href="/">here</a></p>
-    <br>
-    <p>Or click <a href={{redirect}}>here</a> to {{explaination}}</p>
+      <center>  <a href='/'><button type="button" name="button">  Main Page</button></a></center>
+
+      <center>  <a href={{redirect}}><button type="button" name="button"> {{explaination}}</button></a></center>
+
+
   </body>
 </html>

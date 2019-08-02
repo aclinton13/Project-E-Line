@@ -199,7 +199,7 @@ class setupPage(webapp2.RequestHandler):
         template_vars = {
             "top": "Setup complete",
             "redirect": "/emergency",
-            "explaination": "to see the emergency page"
+            "explaination": "Emergency Page"
         }
         template = jinja_env.get_template("templates/finished.html")
         self.response.write(template.render(template_vars))
@@ -224,7 +224,7 @@ class addContactsPage(webapp2.RequestHandler):
         template_vars = {
             "top": "Emergency contact added",
             "redirect": "/addContacts",
-            "explaination": "add another emergency contact"
+            "explaination": "Add Emergency Contact"
         }
         template = jinja_env.get_template("templates/finished.html")
         self.response.write(template.render(template_vars))
@@ -255,7 +255,7 @@ class removeContactsPage(webapp2.RequestHandler):
         template_vars = {
             "top": "Emergency contact removed",
             "redirect": "/removeContacts",
-            "explaination": "remove another emergency contact"
+            "explaination": "Emergency Contact"
         }
         template = jinja_env.get_template("templates/finished.html")
         self.response.write(template.render(template_vars))

@@ -3,13 +3,20 @@ api_version: 1
 threadsafe: true
 
 handlers:
-- url: /scripts
-  static_dir: scripts
+- url: /favicon\.icon
+  mime_type: image/vnd.microsoft.icon
+  static_files: images/favicon.ico
+  upload: images/favicon\.ico
+- url: /images
+  static_dir: images
 - url: /stylesheets
   static_dir: stylesheets
+- url: /scripts
+  static_dir: scripts
 - url: /.*
   script: main.app
   login: required
+
 
 libraries:
 - name: jinja2
