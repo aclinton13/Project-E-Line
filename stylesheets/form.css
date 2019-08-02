@@ -1,5 +1,6 @@
 body {
   background-color:#66ccff;
+  font-size: 15px;
 }
 
 html {
@@ -7,9 +8,11 @@ html {
 }
 
 h1{
-font-size: 80px;
-  font-weight: 400;
-  font-family: "Times New Roman", Times, serif;
+font-size: 50px;
+  font-weight: 200;
+  /* font-family: "Times New Roman", Times, serif; */
+  font-family: Verdana, sans-serif;
+
   color: white;
 }
 
