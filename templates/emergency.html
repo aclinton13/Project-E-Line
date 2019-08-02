@@ -9,6 +9,7 @@
     <link rel="stylesheet" href="/stylesheets/emergency.css">
     <link rel="icon" href="/images/favicon.png" type="image/x-icon">
 
+
   </head>
   <body>
     <center>
@@ -25,6 +26,13 @@
           <p>Phone Number: {{eservice.number}}</p>
           <p>Zip: {{eservice.location.split(":")[-1]}}</p>
         </div>
+        <!-- <form class='edelbut' action="/editInformation">
+          <input type="image" src="/images/edit.png" alt="Edit" width="30" height="30">
+        </form>
+        <form class='edelbut' action="/editInformation">
+          <input type="image" src="/images/delete.png" alt="Delete" width="30" height="30">
+        </form> -->
+
             {% endfor %}
             <a class="mdl-button mdl-button--contaned mdl-js-button mdl-js-ripple-effect" href="/editInformation">
               Change Info

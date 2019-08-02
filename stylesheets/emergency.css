@@ -19,6 +19,12 @@ h2{
 margin-bottom: 10px;
 }
 
+.edelbut{
+  display: flex;
+  flex-direction: row;
+
+}
+
 .mdl-card__title-text{
 font-size: 25px;
   font-family: Arial, Helvetica, serif;
