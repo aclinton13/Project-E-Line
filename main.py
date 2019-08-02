@@ -30,10 +30,6 @@ def handleEmergency(person):
         "eservices": eservices,
         "econtacts": econtacts,
     }
-    loginfo(econtacts)
-    loginfo("WHICH\n\n")
-    loginfo(person.econtacts_info)
-    loginfo("WHY\n\n\n")
     template = jinja_env.get_template("templates/emergency.html")
     return template.render(template_vars)
 
@@ -249,22 +245,25 @@ class removeContactPage(webapp2.RequestHandler):
 
         self.redirect("/emergency")
 
-class editContact(webapp2.RequestHandler):
+class editContactPage(webapp2.RequestHandler):
     def get(self):
         insurePerson(self)
         template = jinja_env.get_template("templates/editContacts.html")
-        self.response.write(template.render())
+        template_vars = {
+            "name": self.request.get("name")
+        }
+        self.response.write(template.render(template_vars))
     def post(self):
         current_user = users.get_current_user().email()
         person = getPerson()
         loc = self.request.get("Country")+":"+self.request.get("City")+":"+self.request.get("Zip")
-        person.econtacts_info.append(
-            Information(
-                name= self.request.get("Name"),
-                location=loc,
-                number = (self.request.get("Number"))
-                ).put()
-            )
+        oname = self.request.get("oname")
+        pos = 0
+        for item in person.econtacts_info:
+            if item.get().name == oname:
+                break
+            pos = pos + 1
+        person.econtacts_info[pos] = Information(name=self.request.get("Name"),location=loc, number = self.request.get("Number")).put()
         person.put()
         sleep(0.1)
         self.redirect('/emergency')
@@ -389,6 +388,7 @@ app = webapp2.WSGIApplication([
     ('/search',searchPage),
     ('/addContacts',addContactsPage),
     ('/removeContact',removeContactPage),
+    ('/editContact',editContactPage),
     ('/test',testPage),
     ('/editInformation',editInformationPage),
     ('/choose',choosePage),
