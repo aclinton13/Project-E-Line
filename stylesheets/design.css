@@ -27,7 +27,8 @@ button {
 }
 .demo-card-wide > .mdl-card__title {
   color: #fff;
-  height: 575px;
+  height: 500px;
+  width: 400px;
   background: url('https://www.houseofswitzerland.org/sites/default/files/styles/portrait/public/story/portrait/Gallia%20et%20son%20tonnelet%20%C2%A9%20Iris%20Kuerschner%2C%20www.powerpress.ch%202%20%28Large%29.jpg?h=4a7d1ed4&itok=xyYCkZ3R') center / cover;
 }
 .demo-card-wide > .mdl-card__menu {

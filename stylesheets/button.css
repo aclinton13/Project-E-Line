@@ -1,5 +1,7 @@
 body {
   background-color:#66ccff;
+  align-items: center;
+  justify-content: center;
 }
 
 html {

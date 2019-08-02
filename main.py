@@ -380,7 +380,7 @@ app = webapp2.WSGIApplication([
     ('/about',aboutPage),
     ('/search',searchPage),
     ('/addContacts',addContactsPage),
-    ('/removeContact',removeContactsPage),
+    # ('/removeContact',removeContactsPage),
     ('/test',testPage),
     ('/editInformation',editInformationPage),
     ('/choose',choosePage),

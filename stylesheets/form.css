@@ -12,7 +12,7 @@ font-size: 250%;
   font-weight: 200;
   /* font-family: "Times New Roman", Times, serif; */
   font-family: Verdana, sans-serif;
-  text-shadow: -2px 0 darkgrey, 0 1px black, 1px 0 black, 0 -1px black;
+  text-shadow: -1px 0 #f54d42, 0 1px #f54d42, 1px 0 #f54d42, 0 -1px #f54d42;
 
   color: #f57e76;
 }
