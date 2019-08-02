@@ -6,32 +6,56 @@ html {
   height: 100%;
 }
 h1{
-font-size: 80px;
+font-size: 40px;
   font-weight: 400;
   font-family: "Times New Roman", Times, serif;
-  color: black;
+  color: #e32214;
+  font-family: Verdana, sans-serif;
+
+}
+
+h2{
+  font-size: 30px;
+margin-bottom: 10px;
+}
+
+.edelbut{
+  display: flex;
+  flex-direction: row;
+
 }
 
 .mdl-card__title-text{
-
+font-size: 25px;
   font-family: Arial, Helvetica, serif;
   color: #ff99cc ;
+  margin: -10px;
+  margin-bottom: -20px;
 }
 
 .demo-card-wide.mdl-card {
-  width: 500px;
+  width: 300px;
+  font-size: 25px;
 }
 .demo-card-wide > .mdl-card__title {
-  height: 500px;
-}
+  height: 300px;
+  font-size: 25px;
 
+}
+#emer{
+  margin-bottom: -50px;
+}
 
 .demo-card-square.mdl-card {
-  width: 500px;
+  width: 300px;
 }
 .demo-card-square > .mdl-card__title {
-  height: 500px;
+  height: 300px;
+
 }
 .mdl-card__title{
   flex-direction: column;
+}
+.mdl-card__supporting-text{
+  padding:0;
 }

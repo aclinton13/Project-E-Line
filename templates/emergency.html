@@ -9,6 +9,7 @@
     <link rel="stylesheet" href="/stylesheets/emergency.css">
     <link rel="icon" href="/images/favicon.png" type="image/x-icon">
 
+
   </head>
   <body>
     <center>
@@ -22,37 +23,58 @@
               {% for eservice in eservices %}
               <h2 class="mdl-card__title-text"> <h2>{{eservice.name}}</h2>
         <div class="mdl-card__supporting-text">
-
           <p>Phone Number: {{eservice.number}}</p>
           <p>Zip: {{eservice.location.split(":")[-1]}}</p>
         </div>
+        <!-- <form class='edelbut' action="/editInformation">
+          <input type="image" src="/images/edit.png" alt="Edit" width="30" height="30">
+        </form>
+        <form class='edelbut' action="/editInformation">
+          <input type="image" src="/images/delete.png" alt="Delete" width="30" height="30">
+        </form> -->
+
             {% endfor %}
+            <a class="mdl-button mdl-button--contaned mdl-js-button mdl-js-ripple-effect" href="/editInformation">
+              Change Info
+            </a>
           </div>
         </div>
       </div>
       {% if econtacts|length != 0 %}
-                    <h2>EMERGENCY CONTACTS:</h2>
+      <h2>EMERGENCY CONTACTS:</h2>
+      {% for econtact in econtacts %}
       <div class="demo-card-square mdl-card mdl-shadow--2dp">
         <div class="mdl-card__actions mdl-card--border">
-
-
-
           <div class="mdl-card__title">
-                {% for econtact in econtacts %}
-  <h2 class="mdl-card__title-text"> <h2>{{econtact.name}}</h2>
+            <h2 class="mdl-card__title-text"> <h2>{{econtact.name}}</h2>
             <div class="mdl-card__supporting-text">
               <p>Phone Number: {{econtact.number}}</p>
               <p>Zip: {{econtact.location.split(":")[-1]}}</p>
-            </div>  {% endfor %}
-
-        </div>
+              <div class="mdl-card__action">
+                <form action="/removeContact" method="post">
+                  <input type="hidden" name="contact_name" value="{{econtact.name}}">
+                  <input type="hidden" name="contact_location" value="{{econtact.location}}">
+                  <input type="hidden" name="contact_number" value="{{econtact.number}}">
+                  <a class="mdl-button mdl-button--contaned mdl-js-button mdl-js-ripple-effect" href="/editContact?contact={{econtact.name}}">
+                    Edit
+                  </a>
+                  <button class="mdl-button mdl-button--contaned mdl-js-button mdl-js-ripple-effect" type="submit" name="Submit">Remove</button
+                </form>
+              </div>
+            </div>
+          </div>
       </div>
-
 </div>
+<br>
+      {% endfor %}
     {% endif %}
     <a class="mdl-button mdl-button--contaned mdl-js-button mdl-js-ripple-effect" href="/">
-      Back
+      Home
     </a>
+    <a class="mdl-button mdl-button--contaned mdl-js-button mdl-js-ripple-effect" href="/addContacts">
+      Add Emergency Contact
+    </a>
+    <br>
        </center>
 
 </html>

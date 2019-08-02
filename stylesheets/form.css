@@ -1,5 +1,6 @@
 body {
   background-color:#66ccff;
+  font-size: 15px;
 }
 
 html {
@@ -7,10 +8,13 @@ html {
 }
 
 h1{
-font-size: 80px;
-  font-weight: 400;
-  font-family: "Times New Roman", Times, serif;
-  color: white;
+font-size: 250%;
+  font-weight: 200;
+  /* font-family: "Times New Roman", Times, serif; */
+  font-family: Verdana, sans-serif;
+  text-shadow: -2px 0 darkgrey, 0 1px black, 1px 0 black, 0 -1px black;
+
+  color: #f57e76;
 }
 
 .mdl-card__title-text{
@@ -21,10 +25,10 @@ font-size: 80px;
 
 p {
   color: white;
-  font-size: 200%
+  font-size: 170%
 }
 .exl{
-  margin: 35px;
+  margin: 7px;
 }
 .fix{
   margin: 20px;
@@ -34,7 +38,9 @@ p {
 }
 
 .space{
-  margin: 100px;
+  margin: 10px;
+  display: flex;
+  /* justify-content: center; */
 }
 
 .size{
@@ -55,6 +61,6 @@ button {
   border-radius: 4px;
   color: white;
   font-size: 16px;
-  height: 50px;
-  width: 100px;
+  height: 100%;
+  width: 200%;
 }

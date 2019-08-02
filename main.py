@@ -229,36 +229,29 @@ class addContactsPage(webapp2.RequestHandler):
         template = jinja_env.get_template("templates/finished.html")
         self.response.write(template.render(template_vars))
 
-class removeContactsPage(webapp2.RequestHandler):
-    def get(self):
-        person = getPerson()
-        insurePerson(self)
-        econtacts = []
-        if len(person.econtacts_info) != 0:
-            for econtacts_key in person.econtacts_info:
-                econtacts.append(econtacts_key.get())
-        template_vars = {
-            "person": person,
-            "econtacts": econtacts,
-        }
-        template = jinja_env.get_template("templates/removeContacts.html")
-        self.response.write(template.render(template_vars))
+class removeContactPage(webapp2.RequestHandler):
     def post(self):
-        current_user = users.get_current_user().email()
         person = getPerson()
-        pos = int(self.request.get("position"))
+        toremove = ""
+        toremove_name = self.request.get("contact_name")
+        toremove_location = self.request.get("contact_location")
+        toremove_number = self.request.get("contact_number")
+        for item in map(lambda x: x.get(),person.econtacts_info):
+            if item.name == toremove_name and item.location == toremove_location and item.number == toremove_number:
+                toremove = item
+        pos = person.econtacts_info.index(toremove.key)
         person.econtacts_info[pos].delete()
         del person.econtacts_info[pos]
-        loginfo(person.econtacts_info)
-        loginfo("i\n\n\n")
         person.put()
         template_vars = {
             "top": "Emergency contact removed",
-            "redirect": "/removeContacts",
-            "explaination": "Emergency Contact"
+            "redirect": "/emergency",
+            "explaination": "Emergency Contacts"
         }
         template = jinja_env.get_template("templates/finished.html")
         self.response.write(template.render(template_vars))
+
+
 
 class editInformationPage(webapp2.RequestHandler):
     def get(self):
@@ -379,7 +372,7 @@ app = webapp2.WSGIApplication([
     ('/about',aboutPage),
     ('/search',searchPage),
     ('/addContacts',addContactsPage),
-    ('/removeContacts',removeContactsPage),
+    ('/removeContact',removeContactPage),
     ('/test',testPage),
     ('/editInformation',editInformationPage),
     ('/choose',choosePage),
