@@ -6,6 +6,7 @@ import urllib
 import json
 from logging import info as loginfo
 from random import randint
+from time import sleep
 
 jinja_env = jinja2.Environment(
     loader = jinja2.FileSystemLoader(os.path.dirname(__file__))
@@ -17,15 +18,22 @@ from google.appengine.api import users
 def handleEmergency(person):
     eservices = []
     econtacts = []
-    for eservice_key in person.eservice_info:
+    super = Person.query().filter(Person.id == person.location).get()
+
+    for eservice_key in super.eservice_info:
         eservices.append(eservice_key.get())
+
     for econtacts_key in person.econtacts_info:
         econtacts.append(econtacts_key.get())
+
     template_vars = {
-        "person": person,
         "eservices": eservices,
         "econtacts": econtacts,
     }
+    loginfo(econtacts)
+    loginfo("WHICH\n\n")
+    loginfo(person.econtacts_info)
+    loginfo("WHY\n\n\n")
     template = jinja_env.get_template("templates/emergency.html")
     return template.render(template_vars)
 
@@ -59,11 +67,7 @@ def listContains(li,subli):
 
 def getPerson():
     current_user = users.get_current_user()
-    person = Person.query().filter(Person.id == current_user.email()).fetch()
-    if len(person) > 0:
-        return person[0]
-    else:
-        return None
+    return Person.query().filter(Person.id == current_user.email()).get()
 
 def insurePerson(handler):
     if getPerson() is None:
@@ -137,7 +141,8 @@ class setupPage(webapp2.RequestHandler):
         person = Person.query().filter(Person.id == current_user).fetch()
         if len(person) == 0:
             template_vars = {
-                "post_location" : "/setup"
+                "post_location" : "/setup",
+                "value": ["","","","",""]
             }
             template = jinja_env.get_template("templates/form.html")
             self.response.write(template.render(template_vars))
@@ -221,13 +226,15 @@ class addContactsPage(webapp2.RequestHandler):
                 ).put()
             )
         person.put()
-        template_vars = {
-            "top": "Emergency contact added",
-            "redirect": "/addContacts",
-            "explaination": "Add Emergency Contact"
-        }
-        template = jinja_env.get_template("templates/finished.html")
-        self.response.write(template.render(template_vars))
+        # template_vars = {
+        #     "top": "Emergency contact added",
+        #     "redirect": "/addContacts",
+        #     "explaination": "Add Emergency Contact"
+        # }
+        # template = jinja_env.get_template("templates/finished.html")
+        # self.response.write(template.render(template_vars))
+        sleep(0.1)
+        self.redirect('/emergency')
 
 class removeContactPage(webapp2.RequestHandler):
     def post(self):
@@ -239,24 +246,28 @@ class removeContactPage(webapp2.RequestHandler):
         for item in map(lambda x: x.get(),person.econtacts_info):
             if item.name == toremove_name and item.location == toremove_location and item.number == toremove_number:
                 toremove = item
+                break
         pos = person.econtacts_info.index(toremove.key)
+
         person.econtacts_info[pos].delete()
         del person.econtacts_info[pos]
         person.put()
-        template_vars = {
-            "top": "Emergency contact removed",
-            "redirect": "/emergency",
-            "explaination": "Emergency Contacts"
-        }
-        template = jinja_env.get_template("templates/finished.html")
-        self.response.write(template.render(template_vars))
+        sleep(0.1)
 
-
+        self.redirect("/emergency")
 
 class editInformationPage(webapp2.RequestHandler):
     def get(self):
+        person = getPerson()
+        loc = person.location.split(":")
+        skey = self.request.get("key")
+        loginfo(person)
+        loginfo(skey)
+        if skey:
+            person = ndb.Key(urlsafe=skey).get()
         template_vars = {
-            "post_location" : "/editInformation"
+            "post_location" : "/editInformation",
+            "value": [loc[0],loc[1],loc[2],person.eservice_info[0].get().number,person.eservice_info[1].get().number],
         }
         template = jinja_env.get_template("templates/form.html")
         self.response.write(template.render(template_vars))
@@ -286,13 +297,10 @@ class editInformationPage(webapp2.RequestHandler):
             input_keys.append(input_info[i].put())
 
             most_common_number = mostCommon(l,"name",names[i],"number")
-            loginfo(most_common_number)
-            loginfo("K\n\n\n")
+
             if most_common_number != None:
                 toplace_info.append(most_common_number)
             else:
-                loginfo(input_info)
-                loginfo("J\n\n\n")
                 toplace_info.append(input_info[i])
         super_persons = Person.query().filter(Person.id == loc).fetch()
 
@@ -312,14 +320,8 @@ class editInformationPage(webapp2.RequestHandler):
             eservice_info=[input_keys[0],input_keys[1]],
             econtacts_info=[],
             ).put()
-
-        template_vars = {
-            "top": "Changed Information",
-            "redirect": "/emergency",
-            "explaination": "to see the emergency page"
-        }
-        template = jinja_env.get_template("templates/finished.html")
-        self.response.write(template.render(template_vars))
+        sleep(0.1)
+        self.redirect("/emergency")
 
 class choosePage(webapp2.RequestHandler):
     def get(self):

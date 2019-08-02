@@ -23,26 +23,26 @@
     <h1> Enter Personal Information </h1>
 <form action="{{post_location}}" method="post">
         <p class="fix"><b>Enter country</b></p>
-        <input type="text" name="Country" value="" required placeholder='Country name'> <br>
+        <input type="text" name="Country" value="{{value[0]}}" required placeholder='Country name'> <br>
 
         <p class="fix"><b> Enter city</b> </p>
-        <input type="text" name="City" value="" required placeholder="City name"> <br>
+        <input type="text" name="City" value="{{value[1]}}" required placeholder="City name"> <br>
 
         <p class="fix"><b> Enter zip code</b> </p>
-        <input type="text" name="Zip" value="" required placeholder="e.g: 12345"> <br>
+        <input type="text" name="Zip" value="{{value[2]}}" required placeholder="e.g: 12345"> <br>
 
         <p class="fix"><b> Enter number of police department </p>
         <!-- <input type="text" name="Police" value="" > <br> -->
         <input type="tel" id="police" name="Police"
                pattern="[0-9]{3}-[0-9]{3}-[0-9]{4}"
-               required placeholder="e.g: 911-911-9111"> <br>
+               required placeholder="e.g: 911-911-9111" value="{{value[3]}}"> <br>
 
         <p class="fix"><b> Enter number of fire department </p>
         <!-- <input type="text" name="Fire" value="" >
       </ul> -->
       <input type="tel" id="fire" name="Fire"
              pattern="[0-9]{3}-[0-9]{3}-[0-9]{4}"
-             required placeholder="e.g: 123-456-7890">
+             required placeholder="e.g: 123-456-7890" value={{value[4]}}>
       <br><br>
         <input type="submit" name="submit" value="Finished">
 
