@@ -226,13 +226,6 @@ class addContactsPage(webapp2.RequestHandler):
                 ).put()
             )
         person.put()
-        # template_vars = {
-        #     "top": "Emergency contact added",
-        #     "redirect": "/addContacts",
-        #     "explaination": "Add Emergency Contact"
-        # }
-        # template = jinja_env.get_template("templates/finished.html")
-        # self.response.write(template.render(template_vars))
         sleep(0.1)
         self.redirect('/emergency')
 
@@ -255,6 +248,27 @@ class removeContactPage(webapp2.RequestHandler):
         sleep(0.1)
 
         self.redirect("/emergency")
+
+class editContact(webapp2.RequestHandler):
+    def get(self):
+        insurePerson(self)
+        template = jinja_env.get_template("templates/editContacts.html")
+        self.response.write(template.render())
+    def post(self):
+        current_user = users.get_current_user().email()
+        person = getPerson()
+        loc = self.request.get("Country")+":"+self.request.get("City")+":"+self.request.get("Zip")
+        person.econtacts_info.append(
+            Information(
+                name= self.request.get("Name"),
+                location=loc,
+                number = (self.request.get("Number"))
+                ).put()
+            )
+        person.put()
+        sleep(0.1)
+        self.redirect('/emergency')
+
 
 class editInformationPage(webapp2.RequestHandler):
     def get(self):
